@@ -1,6 +1,6 @@
 import { Engine, Keys } from "excalibur";
 import { ExState } from "../../ExFSM";
-import { selector } from "../../../selector";
+import { selector } from "../../../Entities/selector";
 
 export class SelectorBinding extends ExState {
   delayFlag = false;

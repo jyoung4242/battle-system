@@ -1,8 +1,8 @@
 import { Engine, TileMap, Tile, Graphic, Rectangle, Color } from "excalibur";
-import { Bandit } from "../bandit";
+import { Bandit, bandit1, bandit3, bandit2 } from "../Entities/bandit";
 import { myKeyboardManager } from "../main";
-import { player, Player } from "../player";
-import { selector } from "../selector";
+import { player, Player } from "../Entities/player";
+import { selector } from "../Entities/selector";
 import { model } from "../UI";
 
 export const attackOptions: menuOptions = [];
@@ -174,7 +174,7 @@ const attackBack: menuItem = {
   isDisabled: false,
   styleText: "",
   action: () => {
-    console.log("melee");
+    console.log("Back");
   },
   get submenu(): string {
     //@ts-ignore
@@ -199,12 +199,14 @@ const melee: menuItem = {
   isDisabled: false,
   action: () => {
     console.log("melee");
+    myKeyboardManager.setOwner("target", [bandit1, bandit2, bandit3]);
   },
   get submenu(): string {
     //@ts-ignore
     if (this.hasSubmenu != null) return " >";
     else return "";
   },
+
   get getDisableText(): string {
     if (this.isDisabled) return "disabled";
     return "";

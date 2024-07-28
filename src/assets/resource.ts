@@ -18,6 +18,8 @@ import playeravatar from "./playeravatar.png";
 import banditavatar from "./banditavatar.png";
 //@ts-ignore
 import flashingTile from "./flashingtile-Sheet.png";
+//@ts-ignore
+import targetMarker from "./marker.png";
 
 export const Resources = {
   map: new ImageSource(overworld),
@@ -28,6 +30,7 @@ export const Resources = {
   playeravater: new ImageSource(playeravatar),
   banditavater: new ImageSource(banditavatar),
   flashingtile: new ImageSource(flashingTile),
+  marker: new ImageSource(targetMarker),
 } as const; // < -- as const is important to get strong typing!
 
 export const flashingTileSS = SpriteSheet.fromImageSource({

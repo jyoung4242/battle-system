@@ -1,6 +1,6 @@
 import { Actor, Engine, Keys, Vector, Animation, ImageSource, Color, Sprite, Direction, Tile } from "excalibur";
-import { BattleManager } from "./BattleManager";
-import { ExFSM, ExState } from "./lib/ExFSM";
+import { BattleManager } from "../BattleManager";
+import { ExFSM, ExState } from "../lib/ExFSM";
 
 import {
   dudeAttackDown,
@@ -15,12 +15,14 @@ import {
   dudeWalkLeft,
   dudeWalkRight,
   dudeWalkUp,
-} from "./assets/playeranimations";
+} from "../assets/playeranimations";
 import { Bandit } from "./bandit";
-import { menuSelect, moveCursorDown, moveCursorUp } from "./UI";
-import { EventActionSequence } from "./BattleEvents/BattleEvent";
-import { TimedTextMessage } from "./BattleEvents/Events/messageText";
-import { ActorMoveEvent } from "./BattleEvents/Events/ActorMoveEvent";
+import { menuSelect, model, moveCursorDown, moveCursorUp } from "../UI";
+import { EventActionSequence } from "../BattleEvents/BattleEvent";
+import { TimedTextMessage } from "../BattleEvents/Events/messageText";
+import { ActorMoveEvent } from "../BattleEvents/Events/ActorMoveEvent";
+import { MeleeSequence } from "../Melee/Sequences/sequence";
+import { DancingCranesintheMoonlight, WhisperingLeafontheWind } from "../Melee/Forms/forms";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -57,6 +59,12 @@ export class Player extends Actor {
   attackButtonLatch: boolean = false;
   isAttackAnimationRunning: boolean = false;
   held_direction: string[] = [];
+  currentTarget: Bandit | null = null;
+  sequence: MeleeSequence[] = [
+    new MeleeSequence("melee sequence 1"),
+    new MeleeSequence("melee sequence 2"),
+    new MeleeSequence("melee sequence 3"),
+  ];
   constructor() {
     super({
       width: 16,
@@ -73,7 +81,7 @@ export class Player extends Actor {
     Engine.currentScene.camera.zoom = 3;
     this.animationFSM.register(playerIdle, playerWalking, playerAttack, playerIdleBattle);
     this.animationFSM.set("idle", this);
-    //this.anchor = new Vector(0, 0);
+    this.sequence[0].forms.push(new WhisperingLeafontheWind(), new DancingCranesintheMoonlight());
   }
 
   newTileLocation(newPositionActor: Actor) {
@@ -87,6 +95,23 @@ export class Player extends Actor {
     }
     // this.actions.easeTo(new Vector(x, y - 8), 1000);
     //TODO - face direction of movement while moving
+  }
+
+  setTarget(bandit: Bandit) {
+    this.currentTarget = bandit;
+    console.log(this.sequence);
+
+    //model.sequences = [...this.sequence];
+    //model.showSequenceMenu = true;
+    //model.meleecomponent.sequences = [...this.sequence];
+    //model.meleecomponent.showSequenceMenu = true;
+    //model.MeleeMenu.sequences = [...this.sequence];
+    //model.MeleeMenu.showSequenceMenu = true;
+    if (model.meleeMenu) {
+      model.meleeMenu.sequences = [...this.sequence];
+      model.meleeMenu.showSequenceMenu = true;
+    }
+    console.log(model.meleeMenu);
   }
 
   attacked(engine: Engine, attacker: Bandit) {

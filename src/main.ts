@@ -1,18 +1,18 @@
 import "./style.css";
 import { UI } from "@peasy-lib/peasy-ui";
-import { Engine, DisplayMode, TileMap, Rectangle, Color } from "excalibur";
+import { Engine, DisplayMode, TileMap } from "excalibur";
 import { loader, mapSS } from "./assets/resource";
-import { player } from "./player";
-import { bandit1, bandit2, bandit3 } from "./bandit";
+import { player } from "./Entities/player";
+import { bandit1, bandit2, bandit3 } from "./Entities/bandit";
 import { model, template } from "./UI";
-import { JsfxrResource, SoundConfig } from "@excaliburjs/plugin-jsfxr";
-import { sounds } from "./sounds";
-import { Selector } from "./selector";
+import { JsfxrResource } from "@excaliburjs/plugin-jsfxr";
+import { sounds } from "./lib/sounds";
 import { KeyboardManager } from "./lib/Keyboard/keyboard";
 import { SelectorBinding } from "./lib/Keyboard/keybindings/selectorBinding";
 import { PlayerBinding } from "./lib/Keyboard/keybindings/playerBinding";
 import { GameMenuControl } from "./lib/Keyboard/keybindings/menuBinding";
 import { noBindings } from "./lib/Keyboard/keybindings/noBindings";
+import { TargetBinding } from "./lib/Keyboard/keybindings/targetSelect";
 
 export let sndPlugin = new JsfxrResource();
 sndPlugin.init(); //initializes the JSFXR library
@@ -35,6 +35,7 @@ myKeyboardManager.registerOwner(new SelectorBinding());
 myKeyboardManager.registerOwner(new PlayerBinding());
 myKeyboardManager.registerOwner(new GameMenuControl());
 myKeyboardManager.registerOwner(new noBindings());
+myKeyboardManager.registerOwner(new TargetBinding());
 myKeyboardManager.setOwner("player");
 
 const tilemap = new TileMap({

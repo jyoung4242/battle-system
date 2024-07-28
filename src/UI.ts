@@ -2,16 +2,25 @@ import { Actor, Color, Engine, Rectangle, Tile, TileMap, Vector } from "excalibu
 //@ts-expect-error
 import cursor from "./assets/cursor.svg";
 import { sndPlugin } from "./main";
-import { Bandit } from "./bandit";
-import { Player, player } from "./player";
+import { Bandit } from "./Entities/bandit";
+import { Player, player } from "./Entities/player";
 import { flashing } from "./assets/flashingtileanimations";
-import { selector, Selector } from "./selector";
+import { selector, Selector } from "./Entities/selector";
 import { mainOptions, menuOptions } from "./Menu/options";
 import { UI } from "@peasy-lib/peasy-ui";
+import { MeleeSequence } from "./Melee/Sequences/sequence";
+
+//Components
+import { MeleeMenu } from "./UIComponents/MeleeMenu";
 
 let soundPlaying: boolean = false;
 
 export const model = {
+  MeleeMenu,
+  meleeMenu: undefined as undefined | MeleeMenu,
+  meleedefault: {},
+  showSequenceMenu: true,
+  sequences: [new MeleeSequence("mySeq")] as any[],
   engineRef: undefined as Engine | undefined,
   registerEngine: (engine: Engine) => {
     //@ts-ignore
@@ -92,10 +101,6 @@ export const template = `
         border: 1px solid white;
         overflow: hidden;
     }
-
-    
-
-   
 
     player-card{
         background-color: #ffffff70;
@@ -209,6 +214,7 @@ export const template = `
     }
 </style> 
 <div> 
+    
     <canvas id='cnv'> </canvas> 
     <ui-layer>
         <battle-queu \${===showBattleQueue}>
@@ -228,6 +234,8 @@ export const template = `
                 </div>
             </battlemenu-options>
         </battle-menu>
+        
+        <\${MeleeMenu:meleeMenu === meleedefault }>
 
         <player-card \${===showBattleQueue}>
             <div class="cardavatar" style="background-color: \${currentTurn.avatarbackground};" >
@@ -346,3 +354,33 @@ function manageFocus() {
     return "";
   }
 }
+
+/*
+
+<style>
+          sequence-menu{
+            
+            background-color: #ffffffD0;
+            color: #333355;
+            font-family: 'testfont';
+            font-size: 20px;
+            position: fixed; 
+            width: auto;
+            height:auto;
+            bottom: 100px;
+            left:250px;
+            border: 4px solid white; 
+            border-radius: 20px;
+            padding: 10px;
+            text-align: center;
+          }
+        </style>
+
+        <sequence-menu \${===showSequenceMenu}>
+            <div  \${seq <=* sequences} style="display: flex; gap: 8px;">
+                 <img src="${cursor}" style="transform: rotate(90deg) translateX(4px); opacity:\${seq.opacity};" width="16" height="16" />
+                <span>\${seq.$index}: \${seq.name}</span>
+            </div>
+        </sequence-menu>
+
+*/

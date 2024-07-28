@@ -1,6 +1,6 @@
-import { Engine, Actor, Vector, ImageSource, Color, Sprite } from "excalibur";
+import { Engine, Actor, Vector, ImageSource, Color, Sprite, coroutine } from "excalibur";
 import { player } from "./player";
-import { Resources } from "./assets/resource";
+import { Resources } from "../assets/resource";
 import {
   banditWalkDown,
   banditWalkUp,
@@ -8,7 +8,7 @@ import {
   banditWalkRight,
   banditIdleRight,
   banditIdleLeft,
-} from "./assets/banditanimations";
+} from "../assets/banditanimations";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -25,6 +25,7 @@ export class Bandit extends Actor {
   public inBattle: boolean = false;
   emoteSprite: Sprite | undefined;
   emote: Actor | undefined;
+  marker: Actor | undefined;
   constructor(position: Vector, name: string) {
     super({
       width: 16,
@@ -43,7 +44,29 @@ export class Bandit extends Actor {
     this.emoteSprite.scale = new Vector(0.5, 0.5);
     this.emote?.graphics.use(this.emoteSprite);
     this.emote.graphics.hide();
+
+    class Marker extends Actor {
+      constructor() {
+        super({
+          width: 16,
+          height: 16,
+          pos: new Vector(0, -16),
+        });
+      }
+
+      onInitialize(Engine: Engine) {
+        this.graphics.use(Resources.marker.toSprite());
+        this.graphics.hide();
+
+        this.actions.repeatForever(ctx => {
+          ctx.blink(250, 250);
+        });
+      }
+    }
+    this.marker = new Marker();
+
     this.addChild(this.emote);
+    this.addChild(this.marker);
     //this.anchor = new Vector(0, 0);
     this.avatarbackground = "#" + Math.floor(Math.random() * 16777215).toString(16);
   }
@@ -63,6 +86,14 @@ export class Bandit extends Actor {
 
   onInitialize(Engine: Engine) {
     this.graphics.use(banditIdleLeft);
+  }
+
+  showArrow(Engine: Engine) {
+    this.marker?.graphics.use(Resources.marker.toSprite());
+  }
+
+  hideArrow(Engine: Engine) {
+    this.marker?.graphics.hide();
   }
 
   onPreUpdate(Engine: Engine) {

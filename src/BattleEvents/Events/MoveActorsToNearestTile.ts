@@ -1,6 +1,6 @@
 import { Engine, Tile, Vector } from "excalibur";
-import { Bandit } from "../../bandit";
-import { Player } from "../../player";
+import { Bandit } from "../../Entities/bandit";
+import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { myKeyboardManager } from "../../main";
 

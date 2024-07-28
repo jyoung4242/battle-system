@@ -1,7 +1,7 @@
 import { Actor, Color, Engine, Rectangle, Tile, Vector } from "excalibur";
-import { myKeyboardManager, sndPlugin } from "./main";
+import { myKeyboardManager, sndPlugin } from "../main";
 import { player } from "./player";
-import { disableMenu } from "./Menu/options";
+import { disableMenu } from "../Menu/options";
 
 export class Selector extends Actor {
   selectorRect: Rectangle;

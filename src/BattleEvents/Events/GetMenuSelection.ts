@@ -15,10 +15,11 @@ export class GetMenuSelectionEvent extends EventAction {
         const selection = (e as CustomEvent).detail.selection;
         if (selection == "Move") {
           model.currentBattleItem.action(engine);
+          model.showBattleMenu = false;
           return;
         }
         model.currentBattleItem.action(engine);
-        model.showBattleMenu = false;
+
         resolve();
       });
     });

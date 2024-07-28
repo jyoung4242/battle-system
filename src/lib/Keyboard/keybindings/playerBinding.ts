@@ -1,6 +1,6 @@
 import { Engine, Keys } from "excalibur";
 import { ExState } from "../../ExFSM";
-import { player } from "../../../player";
+import { player } from "../../../Entities/player";
 
 export class PlayerBinding extends ExState {
   constructor() {

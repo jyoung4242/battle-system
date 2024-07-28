@@ -1,7 +1,7 @@
 import { Actor, Vector } from "excalibur";
 import { EventAction } from "../BattleEvent";
-import { Bandit } from "../../bandit";
-import { Player } from "../../player";
+import { Bandit } from "../../Entities/bandit";
+import { Player } from "../../Entities/player";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 export class ActorMoveEvent extends EventAction {

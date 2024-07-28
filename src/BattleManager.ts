@@ -1,7 +1,7 @@
 // src\BattleManager.ts
 import { model } from "./UI";
-import { Player } from "./player";
-import { Bandit } from "./bandit";
+import { Player } from "./Entities/player";
+import { Bandit } from "./Entities/bandit";
 import { Engine, Tile, Vector } from "excalibur";
 import { myKeyboardManager } from "./main";
 import { BattleEvent, EventActionSequence } from "./BattleEvents/BattleEvent";

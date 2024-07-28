@@ -7,9 +7,9 @@ export class KeyboardManager {
   public fsm: ExFSM = new ExFSM();
   public constructor(public engine: Engine) {}
 
-  setOwner(owner: ExState | string): boolean {
+  setOwner(owner: ExState | string, ...params: any): boolean {
     if (!this.fsm.has(owner)) return false;
-    this.fsm.set(owner, this.engine);
+    this.fsm.set(owner, this.engine, params);
     return true;
   }
 
