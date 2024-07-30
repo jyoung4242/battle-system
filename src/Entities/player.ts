@@ -178,6 +178,14 @@ export class Player extends Actor {
   }
 
   onPreUpdate(Engine: Engine) {
+    //y sort this entity
+    const entities = Engine.currentScene.entities;
+    const sorted = entities
+      .filter(e => e instanceof Bandit || e instanceof Player)
+      .sort((a, b) => b.pos.y - a.pos.y)
+      .reverse();
+    this.z = 1 + sorted.findIndex(e => e === this);
+
     this.animationFSM.update();
     if (this.battleManager) this.battleManager.update();
   }
