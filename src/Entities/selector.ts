@@ -2,9 +2,13 @@ import { Actor, Color, Engine, Rectangle, Tile, Vector } from "excalibur";
 import { myKeyboardManager, sndPlugin } from "../main";
 import { player } from "./player";
 import { disableMenu } from "../Menu/options";
+import { Bandit } from "./bandit";
 
 export class Selector extends Actor {
+  selectionCallback: (...params: any) => void = () => {};
   selectorRect: Rectangle;
+  isPlayable: boolean = true;
+  moveLatch: boolean = false;
   availableTileRect: Rectangle;
   keypresslatch: boolean = false;
   constructor(startingposition: Vector, public availableTiles: Tile[]) {
@@ -32,17 +36,21 @@ export class Selector extends Actor {
     this.graphics.use(this.selectorRect);
   }
 
-  onInitialize(engine: Engine) {
-    console.log(this.availableTiles);
-    console.log(this.availableTileRect);
+  onInitialize(engine: Engine) {}
 
+  setAvailableTiles(tiles: Tile[]) {
+    this.availableTiles = tiles;
+    this.moveLatch = false;
     this.availableTiles.forEach(tile => {
       tile.addGraphic(this.availableTileRect);
     });
   }
 
-  setAvailableTiles(tiles: Tile[]) {
-    this.availableTiles = tiles;
+  clearAvailableTiles() {
+    this.availableTiles.forEach(tile => {
+      tile.removeGraphic(this.availableTileRect);
+    });
+    this.availableTiles = [];
   }
 
   setPosition(position: Vector) {
@@ -133,13 +141,15 @@ export class Selector extends Actor {
     const tilemap = engine.currentScene.tileMaps[0];
     const currentTile: Tile | undefined = tilemap.tiles.find(tile => tile.pos.x == this.pos.x - 8 && tile.pos.y == this.pos.y - 8);
     if (!currentTile) return;
-    player.newTileLocation(this);
-    this.availableTiles.forEach(tile => {
-      tile.removeGraphic(this.availableTileRect);
-    });
+    if (!this.availableTiles.includes(currentTile)) {
+      sndPlugin.playSound("badtile");
+      return;
+    }
+    //player.newTileLocation(this);
+    this.clearAvailableTiles();
+    this.selectionCallback(currentTile);
     myKeyboardManager.setOwner("battlemenu");
     engine.currentScene.remove(this);
-    disableMenu();
   }
 
   cancelSelection(engine: Engine) {
@@ -148,6 +158,42 @@ export class Selector extends Actor {
     });
     myKeyboardManager.setOwner("battlemenu");
     engine.currentScene.remove(this);
+  }
+
+  onPreUpdate(engine: Engine, delta: number): void {
+    if (this.isPlayable || this.moveLatch) return;
+    this.moveLatch = true;
+    let closestTile: Tile | undefined = undefined;
+    let closestDistance = 1000000;
+
+    const listOfOtherBandits = engine.currentScene.actors.filter(
+      x => x instanceof Bandit && x.isPlayerControlled == false
+    ) as Bandit[];
+
+    // filter out availableTiles that have 'other bandit on them
+    const tilesWithOUtOtherBandits = this.availableTiles.filter(tile => {
+      const tilepos = tile.pos.clone();
+      for (let bandit of listOfOtherBandits) {
+        if (bandit.pos.x - 8 == tilepos.x && bandit.pos.y == tilepos.y) return false;
+      }
+      return true;
+    });
+
+    tilesWithOUtOtherBandits.forEach(tile => {
+      const distance = tile.pos.distance(player.pos);
+      if (distance < closestDistance) {
+        closestDistance = distance;
+        closestTile = tile;
+      }
+    });
+    if (closestTile) {
+      this.moveSelector(engine, closestTile);
+
+      setTimeout(() => {
+        this.moveLatch = false;
+        this.selectTile(engine);
+      }, 1250);
+    }
   }
 }
 

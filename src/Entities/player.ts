@@ -23,10 +23,24 @@ import { TimedTextMessage } from "../BattleEvents/Events/messageText";
 import { ActorMoveEvent } from "../BattleEvents/Events/ActorMoveEvent";
 import { MeleeSequence } from "../Melee/Sequences/sequence";
 import { DancingCranesintheMoonlight, WhisperingLeafontheWind } from "../Melee/Forms/forms";
+import { myKeyboardManager } from "../main";
+import { GetMenuSelectionEvent } from "../BattleEvents/Events/GetMenuSelection";
+import { Selector, selector } from "./selector";
+import { GetMeleeSelectionEvent } from "../BattleEvents/Events/meleeSelection";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
 export class Player extends Actor {
+  // game properties of entity
+  initative: number = 2;
+  speed: number = 3;
+  hp: number = 20;
+  hpmax: number = 20;
+  playerSpeed: number = 50;
+  meleeRange: number = 2;
+
+  // all other class props
+
   isPlayerControlled: boolean = true;
   isKeyDetectionEnabled: boolean = true;
   public inBattle: boolean = false;
@@ -48,23 +62,14 @@ export class Player extends Actor {
     dudeAttackRight: dudeAttackRight,
   };
   animationFSM: ExFSM = new ExFSM();
-  initative: number = 2;
   turnTiks: number = 0;
-  speed: number = 3;
-  hp: number = 20;
-  hpmax: number = 20;
-  playerSpeed: number = 50;
   directionFacing: directions = "Down";
   attackAnimation: any = dudeAttackDown;
   attackButtonLatch: boolean = false;
   isAttackAnimationRunning: boolean = false;
   held_direction: string[] = [];
   currentTarget: Bandit | null = null;
-  sequence: MeleeSequence[] = [
-    new MeleeSequence("melee sequence 1"),
-    new MeleeSequence("melee sequence 2"),
-    new MeleeSequence("melee sequence 3"),
-  ];
+  sequence: MeleeSequence[] = [new MeleeSequence("melee sequence 1", 1)];
   constructor() {
     super({
       width: 16,
@@ -84,34 +89,51 @@ export class Player extends Actor {
     this.sequence[0].forms.push(new WhisperingLeafontheWind(), new DancingCranesintheMoonlight());
   }
 
-  newTileLocation(newPositionActor: Actor) {
-    const { x, y } = newPositionActor.pos;
+  newTileLocation(tile: Tile) {
+    // change from actor to tile - newPositionActor: Actor
+    const { x, y } = tile.pos;
     if (this.battleManager) {
+      let listOfEnemies = this.battleManager.turnQueue.filter(ent => ent instanceof Bandit);
       this.battleManager.sendEventSequence(
         new EventActionSequence({
-          actions: [new TimedTextMessage("Mookie Moving!", 1250, 25), new ActorMoveEvent(this, new Vector(x, y - 8), 750, "Right")],
+          actions: [
+            new TimedTextMessage("Mookie Moving!", 1250, 25),
+            new ActorMoveEvent(this, new Vector(x + 8, y), 750, findNearestEnemy(player, listOfEnemies)),
+            new GetMenuSelectionEvent(),
+          ],
         })
       );
     }
-    // this.actions.easeTo(new Vector(x, y - 8), 1000);
-    //TODO - face direction of movement while moving
   }
 
-  setTarget(bandit: Bandit) {
-    this.currentTarget = bandit;
-    console.log(this.sequence);
+  setTarget(engine: Engine, tile: Tile) {
+    //get entity at tile location
+    const { x, y } = tile.pos;
+    let bandit = engine.currentScene.entities.find(ent => {
+      return (ent as Actor).pos.x == x + 8 && (ent as Actor).pos.y == y;
+    });
 
-    //model.sequences = [...this.sequence];
-    //model.showSequenceMenu = true;
-    //model.meleecomponent.sequences = [...this.sequence];
-    //model.meleecomponent.showSequenceMenu = true;
-    //model.MeleeMenu.sequences = [...this.sequence];
-    //model.MeleeMenu.showSequenceMenu = true;
-    if (model.meleeMenu) {
-      model.meleeMenu.sequences = [...this.sequence];
-      model.meleeMenu.showSequenceMenu = true;
+    if (bandit) {
+      //found target
+      const message = `${bandit.name} is selected!`;
+      if (!this.battleManager) return;
+      const EAS = this.battleManager.sendEventSequence(
+        new EventActionSequence({
+          actions: [new TimedTextMessage(message, 1250, 25), new GetMeleeSelectionEvent(this.sequence, this, bandit as Bandit)],
+        })
+      );
+      this.currentTarget = bandit as Bandit;
+    } else {
+      //no target
+      if (!this.battleManager) return;
+      this.battleManager.sendEventSequence(
+        new EventActionSequence({
+          actions: [new TimedTextMessage("No Enemy Selected!", 1250, 25)],
+        })
+      );
+      this.battleManager.endTurn();
+      return;
     }
-    console.log(model.meleeMenu);
   }
 
   attacked(engine: Engine, attacker: Bandit) {
@@ -294,3 +316,15 @@ class idleBattleAnimation extends ExState {
   }
 }
 const playerIdleBattle = new idleBattleAnimation();
+
+function findNearestEnemy(who: Player, enemies: Bandit[]): Bandit {
+  let nearest = enemies[0];
+  let distance = who.pos.distance(nearest.pos);
+  for (let i = 1; i < enemies.length; i++) {
+    if (who.pos.distance(enemies[i].pos) < distance) {
+      nearest = enemies[i];
+      distance = who.pos.distance(nearest.pos);
+    }
+  }
+  return nearest;
+}

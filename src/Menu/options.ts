@@ -10,7 +10,7 @@ export const magicOptions: menuOptions = [];
 
 export type menuOptions = menuItem[];
 
-type menuItem = {
+export type menuItem = {
   name: string;
   hasSubmenu: menuOptions | null;
   hasParent: menuOptions | null;
@@ -48,14 +48,18 @@ const move: menuItem = {
     // show selector
     const engine = params[0];
     const tilemap = engine.currentScene.tileMaps[0];
-    myKeyboardManager.setOwner("selector");
 
-    const availableTiles = getReachableTiles(player, tilemap);
+    // this is the setup for the selector
+    myKeyboardManager.setOwner("selector");
+    const availableTiles = getReachableTiles(player, tilemap, player.speed);
     console.log(availableTiles);
     player.z = 2;
+    selector.selectionCallback = tile => player.newTileLocation(tile);
     selector.setAvailableTiles(availableTiles);
     selector.setPosition(player.pos);
+    selector.isPlayable = true;
     engine.currentScene.add(selector);
+    disableMenu();
   },
   get submenu(): string {
     //@ts-ignore
@@ -197,9 +201,21 @@ const melee: menuItem = {
   hasFocus: true,
   styleText: "",
   isDisabled: false,
-  action: () => {
-    console.log("melee");
-    myKeyboardManager.setOwner("target", [bandit1, bandit2, bandit3]);
+  action: (...params: any) => {
+    // change keyboard ownership
+    // show selector
+    const engine = params[0];
+    const tilemap = engine.currentScene.tileMaps[0];
+    //myKeyboardManager.setOwner("target", [bandit1, bandit2, bandit3]);
+    // this is the setup for the selector
+    myKeyboardManager.setOwner("selector");
+    const availableTiles = getReachableTiles(player, tilemap, player.meleeRange);
+    console.trace(availableTiles);
+    player.z = 2;
+    selector.setAvailableTiles(availableTiles);
+    selector.setPosition(player.pos);
+    selector.selectionCallback = tile => player.setTarget(engine, tile);
+    engine.currentScene.add(selector);
   },
   get submenu(): string {
     //@ts-ignore
@@ -313,7 +329,7 @@ const matter: menuItem = {
 
 magicOptions.push(magickBack, time, matter);
 
-function getReachableTiles(entity: Bandit | Player, tileMap: TileMap): Tile[] {
+function getReachableTiles(entity: Bandit | Player, tileMap: TileMap, distanceToUse: number): Tile[] {
   const directions = [
     { x: 1, y: 0 },
     { x: -1, y: 0 },
@@ -331,7 +347,7 @@ function getReachableTiles(entity: Bandit | Player, tileMap: TileMap): Tile[] {
   while (queue.length > 0) {
     const { tile, distance } = queue.shift()!;
 
-    if (distance > entity.speed) continue;
+    if (distance > distanceToUse) continue;
 
     const tileKey = `${tile.x},${tile.y}`;
     if (!visited.has(tileKey)) {
@@ -390,4 +406,8 @@ function isWalkable(tile: Tile, tileMap: TileMap): boolean {
 
 export function disableMenu() {
   move.isDisabled = true;
+}
+
+export function enableMenu() {
+  move.isDisabled = false;
 }

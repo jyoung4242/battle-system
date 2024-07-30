@@ -31,8 +31,9 @@ export class MeleeSequence {
   experience: number = 0;
   opacity: number = 1;
 
-  constructor(name: string) {
+  constructor(name: string, opacity: number = 1) {
     this.name = name;
+    this.opacity = opacity;
   }
 
   runSequence(): void {}

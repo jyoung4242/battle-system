@@ -3,8 +3,7 @@ import { MeleeSequence } from "../Melee/Sequences/sequence";
 import cursor from "../assets/cursor.svg";
 
 export class MeleeMenu {
-  public sequences: MeleeSequence[] = [];
-  public showSequenceMenu: boolean = false;
+  public state: { sequences: MeleeSequence[]; showSequenceMenu: boolean };
 
   public static template = `
     <style>
@@ -32,25 +31,19 @@ export class MeleeMenu {
             gap: 8px;
         }
     </style>
-    <melee-menu \${===showSequenceMenu}>
-        <melee-sequence \${seq <=* sequences}>
+    <melee-menu \${===state.showSequenceMenu}>
+        <melee-sequence \${seq <=* state.sequences}>
             <img src=${cursor} style="transform: rotate(90deg) translateX(4px); opacity:\${seq.opacity};" width="16" height="16" />
             <span>\${seq.$index}: \${seq.name}</span>
         </melee-sequence>   
     </melee-menu>
     `;
 
-  public constructor() {}
+  public constructor(state: { sequences: MeleeSequence[]; showSequenceMenu: boolean }) {
+    this.state = state;
+  }
 
-  static create() {
-    return new MeleeMenu();
+  static create(state: { sequences: MeleeSequence[]; showSequenceMenu: boolean }) {
+    return new MeleeMenu(state);
   }
 }
-
-/* 
-<sequence-menu \${===showSequenceMenu}>
-<div  \${seq <=* sequences} style="display: flex; gap: 8px;">
-     <img src="${cursor}" style="transform: rotate(90deg) translateX(4px); opacity:\${seq.opacity};" width="16" height="16" />
-    <span>\${seq.$index}: \${seq.name}</span>
-</div>
-</sequence-menu> */

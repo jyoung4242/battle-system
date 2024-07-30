@@ -25,6 +25,10 @@ export class BattleEvent {
     }
     this.isRunning = false;
   }
+
+  appendAction(action: EventAction) {
+    this.queue[this.sequenceIndex].sequence.push(action);
+  }
 }
 
 export class EventActionSequence {

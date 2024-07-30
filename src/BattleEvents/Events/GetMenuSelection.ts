@@ -10,18 +10,26 @@ export class GetMenuSelectionEvent extends EventAction {
     return new Promise(async resolve => {
       model.showBattleMenu = true;
 
-      document.addEventListener("battleMenuSelection", (e: Event) => {
-        const engine = (e as CustomEvent).detail.engine;
-        const selection = (e as CustomEvent).detail.selection;
-        if (selection == "Move") {
-          model.currentBattleItem.action(engine);
-          model.showBattleMenu = false;
-          return;
-        }
-        model.currentBattleItem.action(engine);
+      document.addEventListener(
+        "battleMenuSelection",
+        (e: Event) => {
+          const engine = (e as CustomEvent).detail.engine;
+          const selection = (e as CustomEvent).detail.selection;
 
-        resolve();
-      });
+          if (selection == "Move") {
+            //this runs the code in options.ts for that menu option
+            model.currentBattleItem.action(engine);
+            model.showBattleMenu = false;
+            resolve();
+            return;
+          }
+
+          //this runs the code in options.ts for that menu option
+          model.currentBattleItem.action(engine);
+          resolve();
+        },
+        { once: true }
+      );
     });
   }
 }

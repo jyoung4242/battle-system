@@ -6,7 +6,7 @@ import { Bandit } from "./Entities/bandit";
 import { Player, player } from "./Entities/player";
 import { flashing } from "./assets/flashingtileanimations";
 import { selector, Selector } from "./Entities/selector";
-import { mainOptions, menuOptions } from "./Menu/options";
+import { mainOptions, menuItem, menuOptions } from "./Menu/options";
 import { UI } from "@peasy-lib/peasy-ui";
 import { MeleeSequence } from "./Melee/Sequences/sequence";
 
@@ -18,9 +18,10 @@ let soundPlaying: boolean = false;
 export const model = {
   MeleeMenu,
   meleeMenu: undefined as undefined | MeleeMenu,
-  meleedefault: {},
-  showSequenceMenu: true,
-  sequences: [new MeleeSequence("mySeq")] as any[],
+  meleedefault: {
+    sequences: [] as MeleeSequence[],
+    showSequenceMenu: false,
+  },
   engineRef: undefined as Engine | undefined,
   registerEngine: (engine: Engine) => {
     //@ts-ignore
@@ -38,8 +39,9 @@ export const model = {
   get currentTurn() {
     return this.turnorder[0] as Bandit | Player;
   },
-  battlemenu: mainOptions,
+  battlemenu: mainOptions as menuItem[],
   cursorIndex: 0,
+  currentMeleeMenuIndex: 0,
   get currentBattleItem() {
     return this.battlemenu[this.cursorIndex];
   },
@@ -290,7 +292,6 @@ export function moveCursorRight() {
     }, 100);
     const currentItem = model.currentBattleItem;
     if (currentItem.hasSubmenu) {
-      //model.battlemenu = currentItem.hasSubmenu;
       model.battlemenu = [];
       UI.queue(() => {
         model.battlemenu = [...(currentItem.hasSubmenu as menuOptions)];
@@ -310,7 +311,6 @@ export function moveCursorLeft() {
     }, 100);
     const currentItem = model.currentBattleItem;
     if (currentItem.hasParent) {
-      ///model.battlemenu = currentItem.hasParent;
       model.battlemenu = [];
       UI.queue(() => {
         model.battlemenu = [...(currentItem.hasParent as menuOptions)];
@@ -323,6 +323,7 @@ export function moveCursorLeft() {
 
 export function menuSelect(engine: Engine) {
   if (!soundPlaying) {
+    // if the item is disabled
     if (model.currentBattleItem.isDisabled) {
       sndPlugin.playSound("badtile");
       return;
@@ -332,7 +333,12 @@ export function menuSelect(engine: Engine) {
     setTimeout(() => {
       soundPlaying = false;
     }, 100);
-    //model.currentBattleItem.action(engine);
+
+    if (model.currentBattleItem.name == "Attack") {
+      return;
+    }
+
+    // this sends the selection over to GetMenuSelection.ts
     const menuCustomevent = new CustomEvent("battleMenuSelection", {
       detail: {
         engine: engine,
@@ -343,7 +349,7 @@ export function menuSelect(engine: Engine) {
   }
 }
 
-function manageFocus() {
+export function manageFocus() {
   if (model.battlemenu.length > 0) {
     model.battlemenu.forEach(el => {
       el.hasFocus = false;
@@ -355,32 +361,55 @@ function manageFocus() {
   }
 }
 
-/*
+export function meleeMenuCursorUp() {
+  if (!soundPlaying) {
+    sndPlugin.playSound("blip");
+    soundPlaying = true;
+    setTimeout(() => {
+      soundPlaying = false;
+    }, 100);
+    const currentIndex = model.currentMeleeMenuIndex;
+    const nextIndex = currentIndex != 0 ? currentIndex - 1 : model.meleedefault.sequences.length - 1;
+    model.currentMeleeMenuIndex = nextIndex;
+    model.meleedefault.sequences.forEach(el => (el.opacity = 0));
+    model.meleedefault.sequences[nextIndex].opacity = 1;
+  }
+}
 
-<style>
-          sequence-menu{
-            
-            background-color: #ffffffD0;
-            color: #333355;
-            font-family: 'testfont';
-            font-size: 20px;
-            position: fixed; 
-            width: auto;
-            height:auto;
-            bottom: 100px;
-            left:250px;
-            border: 4px solid white; 
-            border-radius: 20px;
-            padding: 10px;
-            text-align: center;
-          }
-        </style>
+export function meleeMenuCursorDown() {
+  if (!soundPlaying) {
+    sndPlugin.playSound("blip");
+    soundPlaying = true;
+    setTimeout(() => {
+      soundPlaying = false;
+    }, 100);
+    const currentIndex = model.currentMeleeMenuIndex;
+    const nextIndex = currentIndex != model.meleedefault.sequences.length - 1 ? currentIndex + 1 : 0;
+    model.currentMeleeMenuIndex = nextIndex;
+    model.meleedefault.sequences.forEach(el => (el.opacity = 0));
+    model.meleedefault.sequences[nextIndex].opacity = 1;
+  }
+}
 
-        <sequence-menu \${===showSequenceMenu}>
-            <div  \${seq <=* sequences} style="display: flex; gap: 8px;">
-                 <img src="${cursor}" style="transform: rotate(90deg) translateX(4px); opacity:\${seq.opacity};" width="16" height="16" />
-                <span>\${seq.$index}: \${seq.name}</span>
-            </div>
-        </sequence-menu>
+export function meleeMenuCursorSelect(engine: Engine) {
+  if (!soundPlaying) {
+    // if the item is disabled
 
-*/
+    sndPlugin.playSound("blip");
+    soundPlaying = true;
+    setTimeout(() => {
+      soundPlaying = false;
+    }, 100);
+
+    // this sends the selection over to GetMenuSelection.ts
+    // this sends the selection over to GetMenuSelection.ts
+
+    const menuCustomevent = new CustomEvent("meleeMenuSelection", {
+      detail: {
+        engine: engine,
+        selection: model.currentMeleeMenuIndex,
+      },
+    });
+    document.dispatchEvent(menuCustomevent);
+  }
+}

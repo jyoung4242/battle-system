@@ -5,7 +5,7 @@ import { Player } from "../../Entities/player";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 export class ActorMoveEvent extends EventAction {
-  constructor(public who: Bandit | Player, public where: Vector, public duration: number, public endingDirection: directions) {
+  constructor(public who: Bandit | Player, public where: Vector, public duration: number, public endingDirection: Bandit | Player) {
     super();
   }
 
@@ -14,7 +14,8 @@ export class ActorMoveEvent extends EventAction {
       const dir = findDirection(this.where, this.who.pos);
       this.who.directionFacing = dir;
       await this.who.actions.easeTo(this.where, this.duration).toPromise();
-      this.who.directionFacing = this.endingDirection;
+      this.who.directionFacing = findDirection(this.endingDirection.pos, this.who.pos);
+      this.who.z = 1;
       resolve();
     });
   }

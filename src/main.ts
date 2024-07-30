@@ -13,6 +13,7 @@ import { PlayerBinding } from "./lib/Keyboard/keybindings/playerBinding";
 import { GameMenuControl } from "./lib/Keyboard/keybindings/menuBinding";
 import { noBindings } from "./lib/Keyboard/keybindings/noBindings";
 import { TargetBinding } from "./lib/Keyboard/keybindings/targetSelect";
+import { MeleeBindings } from "./lib/Keyboard/keybindings/meleeBindings";
 
 export let sndPlugin = new JsfxrResource();
 sndPlugin.init(); //initializes the JSFXR library
@@ -36,6 +37,7 @@ myKeyboardManager.registerOwner(new PlayerBinding());
 myKeyboardManager.registerOwner(new GameMenuControl());
 myKeyboardManager.registerOwner(new noBindings());
 myKeyboardManager.registerOwner(new TargetBinding());
+myKeyboardManager.registerOwner(new MeleeBindings());
 myKeyboardManager.setOwner("player");
 
 const tilemap = new TileMap({
