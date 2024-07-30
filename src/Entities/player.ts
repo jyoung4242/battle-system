@@ -137,8 +137,6 @@ export class Player extends Actor {
   }
 
   attacked(engine: Engine, attacker: Bandit) {
-    console.log("attacked");
-
     this.animationFSM.set("battleIdle", this);
 
     if (!this.battleManager) {
