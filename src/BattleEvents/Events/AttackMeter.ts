@@ -1,0 +1,31 @@
+import { Scene, Vector } from "excalibur";
+import { AttackMeter } from "../../Entities/attackMeter";
+import { myKeyboardManager } from "../../main";
+
+export class ActionMeterEvent {
+  constructor(public scene: Scene) {
+    console.log("scene passed: ", scene);
+  }
+
+  init(pipeline: any): Promise<void> {
+    return new Promise(resolve => {
+      console.log("pipeline", pipeline);
+      document.addEventListener(
+        "attackResult",
+        (e: Event) => {
+          const evt = e as CustomEvent;
+          const result = evt.detail.result;
+          pipeline.result = result;
+          myKeyboardManager.setOwner("battlemenu");
+          meterInstance.kill();
+          resolve();
+        },
+        { once: true }
+      );
+      const meterPosition = pipeline.cameraPosition as Vector;
+      const meterInstance = new AttackMeter(meterPosition);
+      meterInstance.init();
+      this.scene.add(meterInstance);
+    });
+  }
+}

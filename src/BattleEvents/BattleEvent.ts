@@ -19,7 +19,7 @@ export class BattleEvent {
       const nextSequence = this.queue.shift();
       if (nextSequence) {
         for (const action of nextSequence.sequence) {
-          await action.init();
+          await action.init(nextSequence.pipeline);
         }
       }
     }
@@ -32,6 +32,7 @@ export class BattleEvent {
 }
 
 export class EventActionSequence {
+  pipeline: any = {};
   sequence: EventAction[] = [];
   constructor(seq: EventSequenceConfig) {
     this.sequence = seq.actions;
@@ -41,7 +42,7 @@ export class EventActionSequence {
 export class EventAction {
   constructor() {}
 
-  init(): Promise<void> {
+  init(pipeline: any): Promise<void> {
     return new Promise(resolve => {
       //do eventcode here
       resolve();

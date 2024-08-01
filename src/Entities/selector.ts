@@ -1,6 +1,6 @@
 import { Actor, Color, Engine, Rectangle, Tile, Vector } from "excalibur";
 import { myKeyboardManager, sndPlugin } from "../main";
-import { player } from "./player";
+import { Player, player } from "./player";
 import { disableMenu } from "../Menu/options";
 import { Bandit } from "./bandit";
 
@@ -166,20 +166,25 @@ export class Selector extends Actor {
     let closestTile: Tile | undefined = undefined;
     let closestDistance = 1000000;
 
-    const listOfOtherBandits = engine.currentScene.actors.filter(
-      x => x instanceof Bandit && x.isPlayerControlled == false
-    ) as Bandit[];
+    const listOfOtherActors = engine.currentScene.actors.filter(x => x instanceof Bandit || x instanceof Player) as (
+      | Player
+      | Bandit
+    )[];
+
+    console.log(listOfOtherActors);
 
     // filter out availableTiles that have 'other bandit on them
-    const tilesWithOUtOtherBandits = this.availableTiles.filter(tile => {
+    const tilesWithOUtOtherActors = this.availableTiles.filter(tile => {
       const tilepos = tile.pos.clone();
-      for (let bandit of listOfOtherBandits) {
-        if (bandit.pos.x - 8 == tilepos.x && bandit.pos.y == tilepos.y) return false;
+      for (let actor of listOfOtherActors) {
+        if (actor.pos.x - 8 == tilepos.x && actor.pos.y == tilepos.y) return false;
       }
       return true;
     });
 
-    tilesWithOUtOtherBandits.forEach(tile => {
+    console.log(tilesWithOUtOtherActors);
+
+    tilesWithOUtOtherActors.forEach(tile => {
       const distance = tile.pos.distance(player.pos);
       if (distance < closestDistance) {
         closestDistance = distance;

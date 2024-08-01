@@ -16,6 +16,8 @@ import { MeleeMenu } from "./UIComponents/MeleeMenu";
 let soundPlaying: boolean = false;
 
 export const model = {
+  attackMeterPosition: new Vector(0, 0),
+  attackMeterResults: {} as any,
   MeleeMenu,
   meleeMenu: undefined as undefined | MeleeMenu,
   meleedefault: {

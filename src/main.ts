@@ -14,6 +14,8 @@ import { GameMenuControl } from "./lib/Keyboard/keybindings/menuBinding";
 import { noBindings } from "./lib/Keyboard/keybindings/noBindings";
 import { TargetBinding } from "./lib/Keyboard/keybindings/targetSelect";
 import { MeleeBindings } from "./lib/Keyboard/keybindings/meleeBindings";
+import { MeleeTarget } from "./lib/Keyboard/keybindings/meleeTarget";
+import { meter } from "./Entities/attackMeter";
 
 export let sndPlugin = new JsfxrResource();
 sndPlugin.init(); //initializes the JSFXR library
@@ -38,6 +40,7 @@ myKeyboardManager.registerOwner(new GameMenuControl());
 myKeyboardManager.registerOwner(new noBindings());
 myKeyboardManager.registerOwner(new TargetBinding());
 myKeyboardManager.registerOwner(new MeleeBindings());
+myKeyboardManager.registerOwner(new MeleeTarget());
 myKeyboardManager.setOwner("player");
 
 const tilemap = new TileMap({
@@ -62,3 +65,5 @@ game.add(player);
 game.add(bandit1);
 game.add(bandit2);
 game.add(bandit3);
+
+//game.add(meter);

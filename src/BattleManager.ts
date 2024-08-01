@@ -14,6 +14,8 @@ import { CloseMenuEvent } from "./BattleEvents/Events/closeBattleMenu";
 import { MoveCamera } from "./BattleEvents/Events/moveCamera";
 import { selector } from "./Entities/selector";
 import { enableMenu, mainOptions } from "./Menu/options";
+import { LungeEvent } from "./BattleEvents/Events/LungeEvent";
+import { ActionMeterEvent } from "./BattleEvents/Events/AttackMeter";
 
 const PLAYERGOESFIRST = true;
 
@@ -201,7 +203,15 @@ class ExecuteAction extends ExState {
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
     const BM = params[0];
-    sendEventSequence(new EventActionSequence({ actions: [new MeleeAttack(player, player.currentTarget as Player | Bandit)] }));
+    sendEventSequence(
+      new EventActionSequence({
+        actions: [
+          new LungeEvent(player, (player.currentTarget as Player | Bandit).pos, 20),
+          new ActionMeterEvent(player.scene!),
+          new MeleeAttack(player, player.currentTarget as Player | Bandit),
+        ],
+      })
+    );
   }
 }
 

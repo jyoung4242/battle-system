@@ -10,16 +10,54 @@ export class MeleeAttack extends EventAction {
     super();
   }
 
-  init(): Promise<void> {
+  init(pipeline: any): Promise<void> {
+    console.log("pipeline", pipeline);
+    console.log("in melee attack");
+
     return new Promise(async resolve => {
-      console.log("melee attack");
-      console.log(this.who, this.target);
-      const newDir = findDirection(this.target.pos, this.who.pos);
-      if (this.who instanceof Player) {
-        lunge(this.who, 20);
+      const result = pipeline.result;
+      const originalPosition = pipeline.originalPosition;
+      /*
+      this.result = {
+      size: this.marker.width,
+      difference1: this.targetOuter.width - this.marker.width,
+      difference2: this.marker.width - this.targetInner.width,
+      };
+      */
+      let hit, miss;
+      if (result) {
+        hit = result.size >= 10 && result.size <= 20;
+        miss = !hit;
+      } else {
+        hit = false;
+        miss = true;
       }
 
-      resolve();
+      const newDir = findDirection(this.target.pos, this.who.pos);
+      (this.who as Player).animationFSM.set("attack", this.who);
+      (this.who as Player).isAttackAnimationRunning = true;
+
+      if (hit) {
+        if (this.who instanceof Player) {
+          (this.target as Actor).actions.runAction(new Flash(this.target, Color.Red, 750));
+          this.target.hp -= 2;
+        }
+      } else {
+        (this.who as Actor).actions.runAction(new Flash(this.target, Color.White, 750));
+      }
+
+      let camera = this.who.scene?.camera;
+      if (!camera) return;
+
+      setTimeout(async () => {
+        (this.who as Player).animationFSM.set("battleIdle", this.who);
+        (this.who as Player).actions.easeTo(originalPosition, 750, EasingFunctions.EaseInOutCubic);
+        (this.who as Player).battleManager?.endTurn();
+        camera.move(this.who.pos, 250, EasingFunctions.EaseInOutCubic);
+        camera.strategy.lockToActor(this.who);
+        await camera.zoomOverTime(3, 750, EasingFunctions.EaseInOutCubic);
+        resolve();
+      }, 1000);
     });
   }
 }
@@ -35,27 +73,4 @@ function findDirection(to: Vector, from: Vector): directions {
     // Movement is more vertical
     return dy > 0 ? "Down" : "Up";
   }
-}
-
-function lunge(who: Player | Bandit, distancefromTarget: number) {
-  const target = (who as Player).currentTarget;
-  if (!target) return;
-  const originalPosition = who.pos.clone();
-  const distanceBetween = (who as Player).pos.distance(target.pos);
-  const distancetoMove = distancefromTarget - distanceBetween;
-  const differenceVector = (who as Player).pos.sub(target.pos);
-  const differenceVectorNormalized = differenceVector.normalize();
-  const targetVector = differenceVectorNormalized.scale(distancetoMove);
-
-  console.log(originalPosition);
-  (who as Player).animationFSM.set("attack", who);
-  (who as Player).actions.easeTo(who.pos.add(targetVector), 250, EasingFunctions.EaseInCubic);
-  (who as Player).isAttackAnimationRunning = true;
-  //(target as Actor).actions.blink(100, 100, 5);
-  (target as Actor).actions.runAction(new Flash(target, Color.White, 1000));
-  setTimeout(() => {
-    (who as Player).animationFSM.set("battleIdle", who);
-    (who as Player).actions.easeTo(originalPosition, 750, EasingFunctions.EaseInOutCubic);
-    (who as Player).battleManager?.endTurn();
-  }, 1000);
 }
