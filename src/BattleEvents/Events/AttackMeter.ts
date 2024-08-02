@@ -1,9 +1,11 @@
 import { Scene, Vector } from "excalibur";
 import { AttackMeter } from "../../Entities/attackMeter";
 import { myKeyboardManager } from "../../main";
+import { EventAction } from "../BattleEvent";
 
-export class ActionMeterEvent {
+export class ActionMeterEvent extends EventAction {
   constructor(public scene: Scene) {
+    super();
     console.log("scene passed: ", scene);
   }
 
@@ -16,12 +18,13 @@ export class ActionMeterEvent {
           const evt = e as CustomEvent;
           const result = evt.detail.result;
           pipeline.result = result;
-          myKeyboardManager.setOwner("battlemenu");
+          myKeyboardManager.setOwner("none");
           meterInstance.kill();
           resolve();
         },
         { once: true }
       );
+
       const meterPosition = pipeline.cameraPosition as Vector;
       const meterInstance = new AttackMeter(meterPosition);
       meterInstance.init();

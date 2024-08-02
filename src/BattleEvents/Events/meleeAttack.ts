@@ -1,8 +1,9 @@
-import { Actor, Color, EasingFunctions, Vector } from "excalibur";
+import { Actor, Color, EasingFunctions, Tile, Vector } from "excalibur";
 import { Bandit } from "../../Entities/bandit";
 import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { Flash } from "../../lib/Actions/flash";
+import { model } from "../../UI";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 export class MeleeAttack extends EventAction {
@@ -17,21 +18,16 @@ export class MeleeAttack extends EventAction {
     return new Promise(async resolve => {
       const result = pipeline.result;
       const originalPosition = pipeline.originalPosition;
-      /*
-      this.result = {
-      size: this.marker.width,
-      difference1: this.targetOuter.width - this.marker.width,
-      difference2: this.marker.width - this.targetInner.width,
-      };
-      */
       let hit, miss;
       if (result) {
-        hit = result.size >= 10 && result.size <= 20;
+        hit = result.size >= 10 && result.size <= 30;
         miss = !hit;
       } else {
         hit = false;
         miss = true;
       }
+      let camera = this.who.scene?.camera;
+      if (!camera) return;
 
       const newDir = findDirection(this.target.pos, this.who.pos);
       (this.who as Player).animationFSM.set("attack", this.who);
@@ -40,19 +36,17 @@ export class MeleeAttack extends EventAction {
       if (hit) {
         if (this.who instanceof Player) {
           (this.target as Actor).actions.runAction(new Flash(this.target, Color.Red, 750));
-          this.target.hp -= 2;
+          (this.target as Bandit).takeDamage(10);
+          camera.shake(2, 2, 250);
         }
       } else {
         (this.who as Actor).actions.runAction(new Flash(this.target, Color.White, 750));
       }
 
-      let camera = this.who.scene?.camera;
-      if (!camera) return;
-
       setTimeout(async () => {
         (this.who as Player).animationFSM.set("battleIdle", this.who);
-        (this.who as Player).actions.easeTo(originalPosition, 750, EasingFunctions.EaseInOutCubic);
-        (this.who as Player).battleManager?.endTurn();
+        await (this.who as Player).actions.easeTo(originalPosition, 750, EasingFunctions.EaseInOutCubic).toPromise();
+        snapToTile(this.who, originalPosition);
         camera.move(this.who.pos, 250, EasingFunctions.EaseInOutCubic);
         camera.strategy.lockToActor(this.who);
         await camera.zoomOverTime(3, 750, EasingFunctions.EaseInOutCubic);
@@ -73,4 +67,34 @@ function findDirection(to: Vector, from: Vector): directions {
     // Movement is more vertical
     return dy > 0 ? "Down" : "Up";
   }
+}
+
+function snapToTile(who: Player | Bandit, originalPosition: Vector): void {
+  const closestTile = findTile(who, originalPosition);
+  if (closestTile) {
+    who.pos.x = closestTile.pos.x + 8;
+    who.pos.y = closestTile.pos.y;
+  }
+}
+
+function findTile(actor: Player | Bandit, startingVector: Vector): Tile | null {
+  let currentPosition = startingVector;
+  //find closest open tile to currentPosition
+  let closestTile: Tile | null = null;
+  let closestDistance = Infinity;
+  let tilemap = model.engineRef?.currentScene.tileMaps[0];
+
+  if (!tilemap) return null;
+
+  for (let tile of tilemap.tiles) {
+    let tilePos = tile.pos;
+    let distance = currentPosition.distance(tilePos);
+
+    if (distance < closestDistance && !tile.solid) {
+      closestTile = tile;
+      closestDistance = distance;
+    }
+  }
+
+  return closestTile as Tile;
 }

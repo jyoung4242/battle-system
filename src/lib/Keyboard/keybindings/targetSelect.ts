@@ -3,6 +3,7 @@ import { ExState } from "../../ExFSM";
 import { Bandit, bandit1, bandit2, bandit3 } from "../../../Entities/bandit";
 import { sndPlugin } from "../../../main";
 import { player } from "../../../Entities/player";
+import { model } from "../../../UI";
 
 export class TargetBinding extends ExState {
   delayFlag = false;
@@ -15,7 +16,7 @@ export class TargetBinding extends ExState {
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
     console.log("entering target");
-
+    model.debug = "target";
     const engine = params[0] as Engine;
     [this.availableEnemies] = params[1];
     this.currentEnemy = 0;
@@ -53,7 +54,7 @@ export class TargetBinding extends ExState {
       }
       if (evt.key === Keys.Enter) {
         sndPlugin.playSound("targettik");
-        player.setTarget(this.availableEnemies[this.currentEnemy]);
+        //player.setTarget(this.availableEnemies[this.currentEnemy], new Tile());
         hideBanditArrow(this.availableEnemies[this.currentEnemy], engine);
         // show new UI for selecting sequence
       }

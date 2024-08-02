@@ -16,6 +16,8 @@ import { MeleeMenu } from "./UIComponents/MeleeMenu";
 let soundPlaying: boolean = false;
 
 export const model = {
+  showEndModal: false,
+  debug: "",
   attackMeterPosition: new Vector(0, 0),
   attackMeterResults: {} as any,
   MeleeMenu,
@@ -41,6 +43,11 @@ export const model = {
   get currentTurn() {
     return this.turnorder[0] as Bandit | Player;
   },
+  get isTargetShowing() {
+    if (this.currentTarget) return true;
+    else return false;
+  },
+  currentTarget: undefined as Bandit | Player | undefined,
   battlemenu: mainOptions as menuItem[],
   cursorIndex: 0,
   currentMeleeMenuIndex: 0,
@@ -118,6 +125,27 @@ export const template = `
         left:0; 
         border: 4px solid white; 
         border-radius: 0 20px 20px 0;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 20px;
+        overflow: hidden;
+    }
+
+    target-card{
+    background-color: #ffffff70;
+        color: #333355;
+        font-family: 'testfont';
+        font-size: 26px;
+        position: fixed; 
+        width: 150px;
+        height:200px;
+        bottom: 204px;
+        right:0; 
+        border: 4px solid white; 
+        border-radius:  20px 0 0 20px;
         display: flex;
         flex-direction: column;
         align-items: flex-start;
@@ -216,11 +244,31 @@ export const template = `
         align-items: center;
         
     }
+
+    end-modal{
+        background-color: #ffffff70;
+        color: #whitesmoke;
+        font-family: 'testfont';
+        font-size: 48px;
+        position: fixed; 
+        width: 796px;
+        height:250px;
+        left:0; 
+        top:50%;
+        transform: translateY(-50%);
+        border: 2px solid white; 
+        border-radius: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+    }
 </style> 
 <div> 
     
     <canvas id='cnv'> </canvas> 
     <ui-layer>
+        
         <battle-queu \${===showBattleQueue}>
             <div class="avatar" style="background-color: \${avatar.avatarbackground};" \${avatar <=* turnorder:id}>
                 <img src="\${avatar.avatar}" width="32" height="32"/>
@@ -250,12 +298,26 @@ export const template = `
 
         </player-card>
 
+        <target-card \${===isTargetShowing}>
+            <div class="cardavatar" style="background-color: \${currentTarget.avatarbackground};" >
+                <img src="\${currentTarget.avatar}" width="64" height="64"/>
+            </div>
+            <div style="margin-left: 20px;"> \${currentTarget.name} </div>
+            <div style="margin-left: 20px;"> \${currentTarget.hp}/\${currentTarget.hpmax} </div>
+        </target-card>
+
         <message-text \${===showMessageText}>
           <div> \${messageText} </div>    
         </message-text>
 
+        <end-modal \${===showEndModal}>
+          Battle is over!
+        </end-modal>
+
     </ui-layer>
 </div>`;
+
+//<debug-field>keybinding: \${debug}</debug-field>
 
 export function moveCursorUp() {
   if (!soundPlaying) {
@@ -285,8 +347,8 @@ export function moveCursorDown() {
   }
 }
 
-export function moveCursorRight() {
-  if (!soundPlaying) {
+export function moveCursorRight(override: boolean = false) {
+  if (!soundPlaying || override) {
     sndPlugin.playSound("blip");
     soundPlaying = true;
     setTimeout(() => {
@@ -304,8 +366,8 @@ export function moveCursorRight() {
   }
 }
 
-export function moveCursorLeft() {
-  if (!soundPlaying) {
+export function moveCursorLeft(override: boolean = false) {
+  if (!soundPlaying || override) {
     sndPlugin.playSound("blip");
     soundPlaying = true;
     setTimeout(() => {
@@ -336,7 +398,12 @@ export function menuSelect(engine: Engine) {
       soundPlaying = false;
     }, 100);
 
-    if (model.currentBattleItem.name == "Attack") {
+    if (
+      model.currentBattleItem.name != "Move" &&
+      model.currentBattleItem.name != "  Melee" &&
+      model.currentBattleItem.name != "Attack" &&
+      model.currentBattleItem.name != "  Ranged"
+    ) {
       return;
     }
 

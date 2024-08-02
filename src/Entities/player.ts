@@ -1,4 +1,4 @@
-import { Actor, Engine, Keys, Vector, Animation, ImageSource, Color, Sprite, Direction, Tile } from "excalibur";
+import { Actor, Engine, Keys, Vector, Animation, ImageSource, Color, Sprite, Direction, Tile, Label } from "excalibur";
 import { BattleManager } from "../BattleManager";
 import { ExFSM, ExState } from "../lib/ExFSM";
 
@@ -11,6 +11,14 @@ import {
   dudeIdleLeft,
   dudeIdleRight,
   dudeIdleUp,
+  dudeRangeAttackDown,
+  dudeRangeAttackLeft,
+  dudeRangeAttackRight,
+  dudeRangeAttackUp,
+  dudeRangeIdleDown,
+  dudeRangeIdleLeft,
+  dudeRangeIdleRight,
+  dudeRangeIdleUp,
   dudeWalkDown,
   dudeWalkLeft,
   dudeWalkRight,
@@ -31,6 +39,11 @@ import { GetMeleeSelectionEvent } from "../BattleEvents/Events/meleeSelection";
 type directions = "Up" | "Down" | "Left" | "Right";
 
 export class Player extends Actor {
+  isAnimationRunning: boolean = true;
+  damageVisual: Label | undefined;
+  takingDamage: boolean = false;
+  damagetiks: number = 0;
+
   // game properties of entity
   initative: number = 2;
   speed: number = 3;
@@ -38,6 +51,7 @@ export class Player extends Actor {
   hpmax: number = 20;
   playerSpeed: number = 50;
   meleeRange: number = 2;
+  rangedAttackRange: number = 6;
 
   // all other class props
 
@@ -60,6 +74,14 @@ export class Player extends Actor {
     dudeAttackUp: dudeAttackUp,
     dudeAttackLeft: dudeAttackLeft,
     dudeAttackRight: dudeAttackRight,
+    dudeRangeAttackUp: dudeRangeAttackUp,
+    dudeRangeAttackDown: dudeRangeAttackDown,
+    dudeRangeAttackLeft: dudeRangeAttackLeft,
+    dudeRangeAttackRight: dudeRangeAttackRight,
+    dudeRangeIdleUp: dudeRangeIdleUp,
+    dudeRangeIdleDown: dudeRangeIdleDown,
+    dudeRangeIdleLeft: dudeRangeIdleLeft,
+    dudeRangeIdleRight: dudeRangeIdleRight,
   };
   animationFSM: ExFSM = new ExFSM();
   turnTiks: number = 0;
@@ -78,15 +100,29 @@ export class Player extends Actor {
     this.name = "Mookie";
     this.pos = new Vector(8, 160 - 16);
     this.avatarbackground = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+    this.damageVisual = new Label({
+      color: this.color,
+      text: "0",
+      pos: new Vector(0, 0),
+    });
   }
 
   onInitialize(Engine: Engine) {
     this.graphics.use(dudeIdleDown);
     Engine.currentScene.camera.strategy.lockToActor(this);
     Engine.currentScene.camera.zoom = 3;
-    this.animationFSM.register(playerIdle, playerWalking, playerAttack, playerIdleBattle);
+    this.animationFSM.register(playerIdle, playerWalking, playerAttack, playerIdleBattle, playerRangedLoadIn, playerRangedAttack);
     this.animationFSM.set("idle", this);
     this.sequence[0].forms.push(new WhisperingLeafontheWind(), new DancingCranesintheMoonlight());
+  }
+
+  takeDamage(hp: number) {
+    this.takingDamage = true;
+    (this.damageVisual as Label).text = `-${hp}`;
+    (this.damageVisual as Label).color = Color.Red;
+    this.hp -= hp;
+    this.addChild(this.damageVisual as Label);
   }
 
   newTileLocation(tile: Tile) {
@@ -106,6 +142,14 @@ export class Player extends Actor {
     }
   }
 
+  stopAnimation() {
+    this.isAnimationRunning = false;
+  }
+
+  startAnimation() {
+    this.isAnimationRunning = true;
+  }
+
   setTarget(engine: Engine, tile: Tile) {
     //get entity at tile location
     const { x, y } = tile.pos;
@@ -123,6 +167,38 @@ export class Player extends Actor {
         })
       );
       this.currentTarget = bandit as Bandit;
+      model.currentTarget = bandit as Bandit;
+    } else {
+      //no target
+      if (!this.battleManager) return;
+      this.battleManager.sendEventSequence(
+        new EventActionSequence({
+          actions: [new TimedTextMessage("No Enemy Selected!", 1250, 25)],
+        })
+      );
+      this.battleManager.endTurn();
+      return;
+    }
+  }
+
+  setRangedTarget(engine: Engine, tile: Tile) {
+    //get entity at tile location
+    const { x, y } = tile.pos;
+    let bandit = engine.currentScene.entities.find(ent => {
+      return (ent as Actor).pos.x == x + 8 && (ent as Actor).pos.y == y;
+    });
+
+    if (bandit) {
+      const message = `${bandit.name} is selected!`;
+      if (!this.battleManager) return;
+      const EAS = this.battleManager.sendEventSequence(
+        new EventActionSequence({
+          actions: [new TimedTextMessage(message, 1250, 25)],
+        })
+      );
+      this.currentTarget = bandit as Bandit;
+      model.currentTarget = bandit as Bandit;
+      this.battleManager.fsm.set("executeAction", this.battleManager, "ranged");
     } else {
       //no target
       if (!this.battleManager) return;
@@ -178,6 +254,16 @@ export class Player extends Actor {
   }
 
   onPreUpdate(Engine: Engine) {
+    if (this.takingDamage) {
+      (this.damageVisual as Label).pos.y -= 1;
+      this.damagetiks++;
+      if (this.damagetiks > 25) {
+        this.removeChild(this.damageVisual as Label);
+        this.takingDamage = false;
+        this.damagetiks = 0;
+      }
+    }
+
     //y sort this entity
     const entities = Engine.currentScene.entities;
     const sorted = entities
@@ -186,7 +272,7 @@ export class Player extends Actor {
       .reverse();
     this.z = 1 + sorted.findIndex(e => e === this);
 
-    this.animationFSM.update();
+    if (this.isAnimationRunning) this.animationFSM.update();
     if (this.battleManager) this.battleManager.update();
   }
 }
@@ -334,3 +420,63 @@ function findNearestEnemy(who: Player, enemies: Bandit[]): Bandit {
   }
   return nearest;
 }
+
+class rangedLoadIn extends ExState {
+  animations: Record<string, Animation> = {
+    dudeRangeIdleUp,
+    dudeRangeIdleDown,
+    dudeRangeIdleLeft,
+    dudeRangeIdleRight,
+  };
+
+  playerSpeed = 50;
+
+  constructor() {
+    super("rangedLoadIn");
+  }
+  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    const player = params[0];
+    let animation = this.animations["dudeRangeIdle" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+  exit(_next: ExState | null, ...params: any): void | Promise<void> {}
+
+  update(...params: any): void | Promise<void> {
+    const player = params[0];
+
+    this.playerSpeed = player.playerSpeed;
+    let animation = this.animations["dudeRangeIdle" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+}
+const playerRangedLoadIn = new rangedLoadIn();
+
+class rangedAttack extends ExState {
+  animations: Record<string, Animation> = {
+    dudeRangeAttackDown,
+    dudeRangeAttackRight,
+    dudeRangeAttackLeft,
+    dudeRangeAttackUp,
+  };
+
+  playerSpeed = 50;
+
+  constructor() {
+    super("rangedAttack");
+  }
+  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    const player = params[0];
+    let animation = this.animations["dudeRangeAttack" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+  exit(_next: ExState | null, ...params: any): void | Promise<void> {}
+
+  update(...params: any): void | Promise<void> {
+    const player = params[0];
+
+    this.playerSpeed = player.playerSpeed;
+    let animation = this.animations["dudeRangeAttack" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+}
+const playerRangedAttack = new rangedAttack();

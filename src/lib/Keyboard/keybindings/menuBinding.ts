@@ -11,7 +11,7 @@ export class GameMenuControl extends ExState {
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
     const engine = params[0] as Engine;
-
+    model.debug = "battlemenu";
     this.handler = engine.input.keyboard.on("press", (evt: KeyEvent) => {
       if (evt.key === Keys.ArrowUp) moveCursorUp();
       if (evt.key === Keys.ArrowDown) moveCursorDown();

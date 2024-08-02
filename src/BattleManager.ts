@@ -4,7 +4,7 @@ import { player, Player } from "./Entities/player";
 import { Bandit } from "./Entities/bandit";
 import { Engine, Tile, TileMap, Vector } from "excalibur";
 import { myKeyboardManager } from "./main";
-import { BattleEvent, EventActionSequence } from "./BattleEvents/BattleEvent";
+import { BattleEvent, EventAction, EventActionSequence } from "./BattleEvents/BattleEvent";
 import { TimedTextMessage } from "./BattleEvents/Events/messageText";
 import { ExFSM, ExState } from "./lib/ExFSM";
 import { MoveActorsToNearestTile } from "./BattleEvents/Events/MoveActorsToNearestTile";
@@ -16,8 +16,15 @@ import { selector } from "./Entities/selector";
 import { enableMenu, mainOptions } from "./Menu/options";
 import { LungeEvent } from "./BattleEvents/Events/LungeEvent";
 import { ActionMeterEvent } from "./BattleEvents/Events/AttackMeter";
+import { CheckForEnemeyDead } from "./BattleEvents/Events/checkIfEnemyDead";
+import { EndBattleEvent } from "./BattleEvents/Events/endBattle";
+import { RangedLoadInEvent } from "./BattleEvents/Events/RangedLoadEvent";
+import { RangedAttackEvent } from "./BattleEvents/Events/RangedAttack";
+import { KnifeThrow } from "./BattleEvents/Events/KnifeThrow";
 
 const PLAYERGOESFIRST = true;
+
+let myActions: any = {};
 
 export class BattleManager {
   eventManager = new BattleEvent();
@@ -118,7 +125,7 @@ class StartBattle extends ExState {
         BM.fsm.set("npcAction", BM);
         // do npc action
       }
-    }, 1500);
+    }, 1250);
   }
 }
 
@@ -139,13 +146,14 @@ class NextTurn extends ExState {
     setTimeout(() => {
       if (BM.turnQueue[0].isPlayerControlled) {
         // get menu selection
+
         sendEventSequence(new EventActionSequence({ actions: [new MoveCamera(player, 1000)] }));
         BM.fsm.set("getMenuSelection", BM);
       } else {
         BM.fsm.set("npcAction", BM);
         // do npc action
       }
-    }, 1500);
+    }, 750);
   }
 }
 
@@ -168,11 +176,12 @@ class NpcAction extends ExState {
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
     console.log("npc action");
+    myKeyboardManager.setOwner("none");
     const BM = params[0];
     const unit = BM.turnQueue[0];
 
     sendEventSequence(
-      new EventActionSequence({ actions: [new TimedTextMessage(`Preparing to act`, 2500, 25), new MoveCamera(unit, 1250)] })
+      new EventActionSequence({ actions: [new TimedTextMessage(`Preparing to act`, 2500, 25), new MoveCamera(unit, 750)] })
     );
 
     setTimeout(() => {
@@ -182,17 +191,26 @@ class NpcAction extends ExState {
       console.log(availableTiles);
       unit.z = 2;
       selector.selectionCallback = tile => unit.newTileLocation(tile);
-      selector.setAvailableTiles(availableTiles);
+      selector.setAvailableTiles(availableTiles, false);
       selector.setPosition(unit.pos);
       selector.isPlayable = false;
       engine.currentScene.add(selector);
-    }, 3250);
+    }, 2000);
   }
 }
 
 class EndBattle extends ExState {
   constructor() {
     super("endBattle");
+  }
+  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    const BM = params[0];
+
+    sendEventSequence(
+      new EventActionSequence({
+        actions: [new EndBattleEvent()],
+      })
+    );
   }
 }
 
@@ -203,15 +221,60 @@ class ExecuteAction extends ExState {
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
     const BM = params[0];
+    const action = params[1];
+    console.log("param action: ", action);
+
+    myActions = {
+      melee: [
+        new LungeEvent(player, (player.currentTarget as Player | Bandit).pos, 20),
+        new ActionMeterEvent(player.scene!),
+        new MeleeAttack(player, player.currentTarget as Player | Bandit),
+        new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
+      ],
+      ranged: [
+        new RangedLoadInEvent(player, player.currentTarget as Player | Bandit),
+        new ActionMeterEvent(player.scene!),
+        new RangedAttackEvent(player, player.currentTarget as Player | Bandit),
+        new KnifeThrow(player, player.currentTarget as Player | Bandit),
+        new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
+      ],
+      item: [],
+      defend: [],
+      time: [],
+      matter: [],
+    };
+
+    console.log("action", myActions);
+
+    let easactions: EventAction[] = [];
+
+    switch (action) {
+      case "melee":
+        easactions = [...myActions.melee];
+        break;
+      case "ranged":
+        easactions = [...myActions.ranged];
+        break;
+    }
+
+    console.log("actions", easactions);
+
     sendEventSequence(
+      new EventActionSequence({
+        actions: easactions,
+      })
+    );
+
+    /* sendEventSequence(
       new EventActionSequence({
         actions: [
           new LungeEvent(player, (player.currentTarget as Player | Bandit).pos, 20),
           new ActionMeterEvent(player.scene!),
           new MeleeAttack(player, player.currentTarget as Player | Bandit),
+          new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
         ],
       })
-    );
+    ); */
   }
 }
 
@@ -224,17 +287,21 @@ class EndTurn extends ExState {
     const BM = params[0];
     console.log("end turn");
     //check for end of battle
-    if (battleover(BM.turnQueue)) {
-      //TODO end the battle
+
+    if (battleover(BM.participants)) {
+      BM.fsm.set("endBattle", BM);
       return;
     }
 
-    //close menu
-    sendEventSequence(new EventActionSequence({ actions: [new CloseMenuEvent()] }));
-    //adjust turn order
-    adjustTurnOrder(BM);
-    //start next turn
-    BM.fsm.set("nextTurn", BM);
+    setTimeout(() => {
+      //close menu
+      sendEventSequence(new EventActionSequence({ actions: [new CloseMenuEvent()] }));
+      model.currentTarget = undefined;
+      //adjust turn order
+      adjustTurnOrder(BM);
+      //start next turn
+      BM.fsm.set("nextTurn", BM);
+    }, 1000);
   }
 }
 
@@ -289,7 +356,7 @@ function battleover(queue: (Player | Bandit)[]): boolean {
       }
     }
 
-    if (queue.length == 0) {
+    if (queue.length == 1) {
       return true;
     }
   }
@@ -298,11 +365,6 @@ function battleover(queue: (Player | Bandit)[]): boolean {
 }
 
 function adjustTurnOrder(BM: BattleManager) {
-  // remove the 0 index unit from the queue
-  // subtract 100 from its tikcount
-  // add it back to the end of the queue
-  // resort the queue by tik count
-
   const unitThatWentLast = BM.turnQueue[0];
 
   BM.turnQueue.splice(BM.turnQueue.indexOf(unitThatWentLast), 1);

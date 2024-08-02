@@ -20,6 +20,11 @@ import banditavatar from "./banditavatar.png";
 import flashingTile from "./flashingtile-Sheet.png";
 //@ts-ignore
 import targetMarker from "./marker.png";
+//@ts-ignore
+import dissolveTexture from "./DissolvePattern.png";
+
+//@ts-ignore
+import dissolveTexture from "./knife.png";
 
 export const Resources = {
   map: new ImageSource(overworld),
@@ -31,6 +36,8 @@ export const Resources = {
   banditavater: new ImageSource(banditavatar),
   flashingtile: new ImageSource(flashingTile),
   marker: new ImageSource(targetMarker),
+  dissolveTexture: new ImageSource(dissolveTexture),
+  knife: new ImageSource(dissolveTexture),
 } as const; // < -- as const is important to get strong typing!
 
 export const flashingTileSS = SpriteSheet.fromImageSource({
@@ -67,7 +74,7 @@ export const playerSS2 = SpriteSheet.fromImageSource({
   image: Resources.character,
   grid: {
     rows: 8,
-    columns: 7,
+    columns: 8,
     spriteWidth: 32,
     spriteHeight: 32,
   },

@@ -20,9 +20,9 @@ export class MoveActorsToNearestTile extends EventAction {
         participant.actions.easeTo(cloesetTileCoordsPlusOffset, 1000);
       }
       setTimeout(() => {
-        myKeyboardManager.setOwner("battlemenu");
+        //myKeyboardManager.setOwner("battlemenu");
         resolve();
-      }, 1250);
+      }, 750);
     });
   }
 }

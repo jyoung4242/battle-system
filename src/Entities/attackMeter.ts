@@ -11,8 +11,8 @@ export class AttackMeter extends Actor {
   });
 
   targetOuter = new Rectangle({
-    width: 20,
-    height: 20,
+    width: 30,
+    height: 30,
     color: Color.Transparent,
     lineWidth: 2,
     strokeColor: Color.Blue,
@@ -56,8 +56,8 @@ export class AttackMeter extends Actor {
 
     const targetOuterActor = new Actor({
       name: "targetOuter",
-      width: 20,
-      height: 20,
+      width: 30,
+      height: 30,
     });
     targetOuterActor.graphics.use(this.targetOuter);
     this.addChild(targetOuterActor);
@@ -74,7 +74,7 @@ export class AttackMeter extends Actor {
   stop() {
     this.isRunning = false;
     console.log("stopped");
-
+    myKeyboardManager.setOwner("none");
     this.result = {
       size: this.marker.width,
       difference1: this.targetOuter.width - this.marker.width,
@@ -127,7 +127,7 @@ export class AttackMeter extends Actor {
       } else {
         this.isRunning = false;
         console.log("attack done: missed");
-
+        myKeyboardManager.setOwner("none");
         const attackEvent: CustomEvent = new CustomEvent("attackResult", {
           detail: {
             result: undefined,

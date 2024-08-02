@@ -1,6 +1,6 @@
 import { BattleManager } from "../../BattleManager";
 import { Bandit } from "../../Entities/bandit";
-import { Player } from "../../Entities/player";
+import { player, Player } from "../../Entities/player";
 import { myKeyboardManager } from "../../main";
 import { MeleeSequence } from "../../Melee/Sequences/sequence";
 import { model } from "../../UI";
@@ -38,7 +38,7 @@ export class GetMeleeSelectionEvent extends EventAction {
           model.meleedefault.showSequenceMenu = false;
           model.meleedefault.sequences = [];
           myKeyboardManager.setOwner("none");
-          (this.owner as Player).battleManager?.fsm.set("executeAction");
+          (this.owner as Player).battleManager?.fsm.set("executeAction", player.battleManager, "melee");
           resolve();
         },
         { once: true }

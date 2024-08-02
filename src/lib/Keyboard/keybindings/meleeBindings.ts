@@ -11,6 +11,7 @@ export class MeleeBindings extends ExState {
   }
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    model.debug = "meleemenu";
     const engine = params[0] as Engine;
 
     this.handler = engine.input.keyboard.on("press", (evt: KeyEvent) => {

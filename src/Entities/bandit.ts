@@ -1,4 +1,4 @@
-import { Engine, Actor, Vector, Sprite, Tile, Animation } from "excalibur";
+import { Engine, Actor, Vector, Sprite, Tile, Animation, Color, Label } from "excalibur";
 import { Player, player } from "./player";
 import { Resources } from "../assets/resource";
 import {
@@ -20,6 +20,7 @@ type directions = "Up" | "Down" | "Left" | "Right";
 
 export class Bandit extends Actor {
   isPlayerControlled: boolean = false;
+  isAnimationRunning: boolean = true;
   directionFacing: directions = "Left";
   animationFSM: ExFSM = new ExFSM();
   initative: number = 2;
@@ -33,6 +34,9 @@ export class Bandit extends Actor {
   emoteSprite: Sprite | undefined;
   emote: Actor | undefined;
   marker: Actor | undefined;
+  damageVisual: Label | undefined;
+  takingDamage: boolean = false;
+  damagetiks: number = 0;
   constructor(position: Vector, name: string) {
     super({
       width: 16,
@@ -52,28 +56,13 @@ export class Bandit extends Actor {
     this.emote?.graphics.use(this.emoteSprite);
     this.emote.graphics.hide();
 
-    class Marker extends Actor {
-      constructor() {
-        super({
-          width: 16,
-          height: 16,
-          pos: new Vector(0, -16),
-        });
-      }
-
-      onInitialize(Engine: Engine) {
-        this.graphics.use(Resources.marker.toSprite());
-        this.graphics.hide();
-
-        this.actions.repeatForever(ctx => {
-          ctx.blink(250, 250);
-        });
-      }
-    }
-    this.marker = new Marker();
+    this.damageVisual = new Label({
+      color: this.color,
+      text: "0",
+      pos: new Vector(0, 0),
+    });
 
     this.addChild(this.emote);
-    this.addChild(this.marker);
 
     //this.anchor = new Vector(0, 0);
     this.avatarbackground = "#" + Math.floor(Math.random() * 16777215).toString(16);
@@ -90,6 +79,14 @@ export class Bandit extends Actor {
     if (this.inBattle == false) {
       player.attacked(engine, this);
     }
+  }
+
+  takeDamage(hp: number) {
+    this.takingDamage = true;
+    (this.damageVisual as Label).text = `-${hp}`;
+    (this.damageVisual as Label).color = Color.Red;
+    this.hp -= hp;
+    this.addChild(this.damageVisual as Label);
   }
 
   onInitialize(Engine: Engine) {
@@ -129,7 +126,25 @@ export class Bandit extends Actor {
     player.battleManager?.endTurn();
   }
 
+  stopAnimation() {
+    this.isAnimationRunning = false;
+  }
+
+  startAnimation() {
+    this.isAnimationRunning = true;
+  }
+
   onPreUpdate(Engine: Engine) {
+    if (this.takingDamage) {
+      (this.damageVisual as Label).pos.y -= 1;
+      this.damagetiks++;
+      if (this.damagetiks > 25) {
+        this.removeChild(this.damageVisual as Label);
+        this.takingDamage = false;
+        this.damagetiks = 0;
+      }
+    }
+
     //y sort this entity
     const entities = Engine.currentScene.entities;
     const sorted = entities
@@ -138,7 +153,10 @@ export class Bandit extends Actor {
       .reverse();
     this.z = 1 + sorted.findIndex(e => e === this);
 
-    this.animationFSM.update();
+    if (this.isAnimationRunning) {
+      this.animationFSM.update();
+    }
+
     //check distance to player
     if (this.pos.distance(player.pos) < 80 && this.inBattle == false) {
       this.animationFSM.set("battleIdle", this);

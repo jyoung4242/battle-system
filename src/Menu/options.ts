@@ -3,7 +3,7 @@ import { Bandit, bandit1, bandit3, bandit2 } from "../Entities/bandit";
 import { myKeyboardManager } from "../main";
 import { player, Player } from "../Entities/player";
 import { selector } from "../Entities/selector";
-import { model } from "../UI";
+import { model, moveCursorRight } from "../UI";
 
 export const attackOptions: menuOptions = [];
 export const magicOptions: menuOptions = [];
@@ -55,7 +55,7 @@ const move: menuItem = {
     console.log(availableTiles);
     player.z = 2;
     selector.selectionCallback = tile => player.newTileLocation(tile);
-    selector.setAvailableTiles(availableTiles);
+    selector.setAvailableTiles(availableTiles, true);
     selector.setPosition(player.pos);
     selector.isPlayable = true;
     engine.currentScene.add(selector);
@@ -80,7 +80,8 @@ const attack: menuItem = {
 
   description: "Melee Attack",
   action: () => {
-    console.log("attack");
+    moveCursorRight(true);
+    model.cursorIndex = 1;
   },
   get submenu(): string {
     //@ts-ignore
@@ -202,17 +203,13 @@ const melee: menuItem = {
   styleText: "",
   isDisabled: false,
   action: (...params: any) => {
-    // change keyboard ownership
-    // show selector
     const engine = params[0];
     const tilemap = engine.currentScene.tileMaps[0];
-    //myKeyboardManager.setOwner("target", [bandit1, bandit2, bandit3]);
-    // this is the setup for the selector
     myKeyboardManager.setOwner("selector");
     const availableTiles = getReachableTiles(player, tilemap, player.meleeRange);
-    console.trace(availableTiles);
     player.z = 2;
-    selector.setAvailableTiles(availableTiles);
+    selector.isPlayable = true;
+    selector.setAvailableTiles(availableTiles, true);
     selector.setPosition(player.pos);
     selector.selectionCallback = tile => player.setTarget(engine, tile);
     engine.currentScene.add(selector);
@@ -239,8 +236,17 @@ const ranged: menuItem = {
   description: "Ranged Attack",
   hasFocus: false,
   isDisabled: false,
-  action: () => {
-    console.log("ranged");
+  action: params => {
+    const engine = params;
+    const tilemap = engine.currentScene.tileMaps[0];
+    myKeyboardManager.setOwner("selector");
+    const availableTiles = getReachableTiles(player, tilemap, player.rangedAttackRange);
+    player.z = 2;
+    selector.isPlayable = true;
+    selector.setAvailableTiles(availableTiles, true);
+    selector.setPosition(player.pos);
+    selector.selectionCallback = tile => player.setRangedTarget(engine, tile);
+    engine.currentScene.add(selector);
   },
   get submenu(): string {
     //@ts-ignore

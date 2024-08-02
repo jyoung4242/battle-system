@@ -38,17 +38,21 @@ export class Selector extends Actor {
 
   onInitialize(engine: Engine) {}
 
-  setAvailableTiles(tiles: Tile[]) {
+  setAvailableTiles(tiles: Tile[], playable: boolean = true) {
     this.availableTiles = tiles;
+    this.isPlayable = playable;
     this.moveLatch = false;
     this.availableTiles.forEach(tile => {
       tile.addGraphic(this.availableTileRect);
     });
+    if (this.isPlayable) myKeyboardManager.setOwner("selector");
   }
 
   clearAvailableTiles() {
     this.availableTiles.forEach(tile => {
-      tile.removeGraphic(this.availableTileRect);
+      tile.getGraphics().forEach(graphic => {
+        if (graphic instanceof Rectangle) tile.removeGraphic(graphic);
+      });
     });
     this.availableTiles = [];
   }
@@ -65,6 +69,7 @@ export class Selector extends Actor {
   moveUp(engine: Engine) {
     const tilemap = engine.currentScene.tileMaps[0];
     const currentTile: Tile | undefined = tilemap.tiles.find(tile => tile.pos.x == this.pos.x - 8 && tile.pos.y == this.pos.y - 8);
+
     if (currentTile) {
       const nexttileIndex = tilemap.tiles.findIndex(tile => tile.x == currentTile.x && tile.y == currentTile.y - 1);
       if (nexttileIndex == -1) {
@@ -79,6 +84,7 @@ export class Selector extends Actor {
     const tilemap = engine.currentScene.tileMaps[0];
 
     const currentTile: Tile | undefined = tilemap.tiles.find(tile => tile.pos.x == this.pos.x - 8 && tile.pos.y == this.pos.y - 8);
+
     if (currentTile) {
       const nexttileIndex = tilemap.tiles.findIndex(tile => tile.x == currentTile.x && tile.y == currentTile.y + 1);
       if (nexttileIndex == -1) {
@@ -106,6 +112,7 @@ export class Selector extends Actor {
   moveRight(engine: Engine) {
     const tilemap = engine.currentScene.tileMaps[0];
     const currentTile: Tile | undefined = tilemap.tiles.find(tile => tile.pos.x == this.pos.x - 8 && tile.pos.y == this.pos.y - 8);
+
     if (currentTile) {
       const nexttileIndex = tilemap.tiles.findIndex(tile => tile.x == currentTile.x + 1 && tile.y == currentTile.y);
       if (nexttileIndex == -1) {
@@ -140,7 +147,12 @@ export class Selector extends Actor {
   selectTile(engine: Engine) {
     const tilemap = engine.currentScene.tileMaps[0];
     const currentTile: Tile | undefined = tilemap.tiles.find(tile => tile.pos.x == this.pos.x - 8 && tile.pos.y == this.pos.y - 8);
+
     if (!currentTile) return;
+
+    //if same tile as player, don't do anything
+    if (currentTile.pos.x == player.pos.x - 8 && currentTile.pos.y == player.pos.y) return;
+
     if (!this.availableTiles.includes(currentTile)) {
       sndPlugin.playSound("badtile");
       return;
@@ -148,7 +160,7 @@ export class Selector extends Actor {
     //player.newTileLocation(this);
     this.clearAvailableTiles();
     this.selectionCallback(currentTile);
-    myKeyboardManager.setOwner("battlemenu");
+    if (this.isPlayable) myKeyboardManager.setOwner("battlemenu");
     engine.currentScene.remove(this);
   }
 
@@ -170,8 +182,6 @@ export class Selector extends Actor {
       | Player
       | Bandit
     )[];
-
-    console.log(listOfOtherActors);
 
     // filter out availableTiles that have 'other bandit on them
     const tilesWithOUtOtherActors = this.availableTiles.filter(tile => {

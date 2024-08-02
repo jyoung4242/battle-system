@@ -162,10 +162,6 @@ export const dudeAttackDown = new Animation({
       graphic: playerSS2.getSprite(3, 4),
       duration: 75,
     },
-    {
-      graphic: playerSS2.getSprite(3, 4),
-      duration: 75,
-    },
   ],
 });
 
@@ -208,6 +204,134 @@ export const dudeAttackLeft = new Animation({
     },
     {
       graphic: playerSS2.getSprite(3, 7),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeAttackUp = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 5),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(5, 5),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(6, 5),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(7, 5),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeAttackDown = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 4),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(5, 4),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(6, 4),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(7, 4),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeAttackRight = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 6),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(5, 6),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(6, 6),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(7, 6),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeAttackLeft = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 7),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(5, 7),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(6, 7),
+      duration: 75,
+    },
+    {
+      graphic: playerSS2.getSprite(7, 7),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeIdleLeft = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 7),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeIdleRight = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 6),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeIdleUp = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 5),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeRangeIdleDown = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS2.getSprite(4, 4),
       duration: 75,
     },
   ],
