@@ -50,6 +50,7 @@ export class MeleeAttack extends EventAction {
         camera.move(this.who.pos, 250, EasingFunctions.EaseInOutCubic);
         camera.strategy.lockToActor(this.who);
         await camera.zoomOverTime(3, 750, EasingFunctions.EaseInOutCubic);
+        model.showBattleQueue = true;
         resolve();
       }, 1000);
     });

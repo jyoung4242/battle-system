@@ -15,10 +15,12 @@ import { EventActionSequence } from "../BattleEvents/BattleEvent";
 import { ActorMoveEvent } from "../BattleEvents/Events/ActorMoveEvent";
 import { TimedTextMessage } from "../BattleEvents/Events/messageText";
 import { ExFSM, ExState } from "../lib/ExFSM";
+import { BattleManager } from "../BattleManager";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
 export class Bandit extends Actor {
+  battlManager: BattleManager | undefined;
   isPlayerControlled: boolean = false;
   isAnimationRunning: boolean = true;
   directionFacing: directions = "Left";
@@ -32,6 +34,8 @@ export class Bandit extends Actor {
   avatarbackground: string = "";
   public inBattle: boolean = false;
   emoteSprite: Sprite | undefined;
+  clockEmoteSprite: Sprite | undefined;
+
   emote: Actor | undefined;
   marker: Actor | undefined;
   damageVisual: Label | undefined;
@@ -52,6 +56,7 @@ export class Bandit extends Actor {
       pos: new Vector(2, -16),
     });
     this.emoteSprite = Resources.emote.toSprite();
+    this.clockEmoteSprite = Resources.timeEmote.toSprite();
     this.emoteSprite.scale = new Vector(0.5, 0.5);
     this.emote?.graphics.use(this.emoteSprite);
     this.emote.graphics.hide();
@@ -68,6 +73,10 @@ export class Bandit extends Actor {
     this.avatarbackground = "#" + Math.floor(Math.random() * 16777215).toString(16);
   }
 
+  setBattleManager(battleManager: BattleManager) {
+    this.battlManager = battleManager;
+  }
+
   alert(engine: Engine) {
     this.animationFSM.set("battleIdle", this);
     this.emoteSprite = Resources.emote.toSprite();
@@ -79,6 +88,17 @@ export class Bandit extends Actor {
     if (this.inBattle == false) {
       player.attacked(engine, this);
     }
+  }
+
+  applyStatusEffect() {
+    console.trace("in status effect");
+
+    (this.clockEmoteSprite as Sprite).scale = new Vector(0.5, 0.5);
+    this.emote?.graphics.use(this.clockEmoteSprite as Sprite);
+  }
+
+  removeStatusEffect() {
+    this.emote?.graphics.hide();
   }
 
   takeDamage(hp: number) {
@@ -118,6 +138,7 @@ export class Bandit extends Actor {
       );
       setTimeout(() => {
         this.doneMoving();
+        this.removeStatusEffect();
       }, 2200);
     }
   }

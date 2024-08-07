@@ -210,7 +210,10 @@ const melee: menuItem = {
     player.z = 2;
     selector.isPlayable = true;
     selector.setAvailableTiles(availableTiles, true);
-    selector.setPosition(player.pos);
+    //find closest enemy?
+    const closestEnemy = getClosestEnemey();
+    if (closestEnemy) selector.setPosition(closestEnemy.pos);
+    else selector.setPosition(player.pos);
     selector.selectionCallback = tile => player.setTarget(engine, tile);
     engine.currentScene.add(selector);
   },
@@ -244,7 +247,9 @@ const ranged: menuItem = {
     player.z = 2;
     selector.isPlayable = true;
     selector.setAvailableTiles(availableTiles, true);
-    selector.setPosition(player.pos);
+    const closestEnemy = getClosestEnemey();
+    if (closestEnemy) selector.setPosition(closestEnemy.pos);
+    else selector.setPosition(player.pos);
     selector.selectionCallback = tile => player.setRangedTarget(engine, tile);
     engine.currentScene.add(selector);
   },
@@ -294,8 +299,19 @@ const time: menuItem = {
   description: "Time based magic",
   hasFocus: false,
   isDisabled: false,
-  action: () => {
-    console.log("time");
+  action: params => {
+    const engine = params;
+    const tilemap = engine.currentScene.tileMaps[0];
+    myKeyboardManager.setOwner("selector");
+    const availableTiles = getReachableTiles(player, tilemap, player.timeSpellRange);
+    player.z = 2;
+    selector.isPlayable = true;
+    selector.setAvailableTiles(availableTiles, true);
+    const closestEnemy = getClosestEnemey();
+    if (closestEnemy) selector.setPosition(closestEnemy.pos);
+    else selector.setPosition(player.pos);
+    selector.selectionCallback = tile => player.setMagicTarget(engine, tile, "time");
+    engine.currentScene.add(selector);
   },
   get submenu(): string {
     //@ts-ignore
@@ -318,8 +334,19 @@ const matter: menuItem = {
   hasFocus: false,
   isDisabled: false,
   description: "Matter based magic",
-  action: () => {
-    console.log("matter");
+  action: params => {
+    const engine = params;
+    const tilemap = engine.currentScene.tileMaps[0];
+    myKeyboardManager.setOwner("selector");
+    const availableTiles = getReachableTiles(player, tilemap, player.matterSpellRange);
+    player.z = 2;
+    selector.isPlayable = true;
+    selector.setAvailableTiles(availableTiles, true);
+    const closestEnemy = getClosestEnemey();
+    if (closestEnemy) selector.setPosition(closestEnemy.pos);
+    else selector.setPosition(player.pos);
+    selector.selectionCallback = tile => player.setMagicTarget(engine, tile, "matter");
+    engine.currentScene.add(selector);
   },
   get submenu(): string {
     //@ts-ignore
@@ -416,4 +443,20 @@ export function disableMenu() {
 
 export function enableMenu() {
   move.isDisabled = false;
+}
+
+function getClosestEnemey(): Bandit | undefined {
+  let distance = Infinity;
+  const listOfBandits = model.engineRef?.currentScene.entities.filter(x => x instanceof Bandit) as Bandit[];
+  let closestBandit = undefined;
+
+  listOfBandits.forEach(bandit => {
+    const distanceToBandit = player.pos.distance(bandit.pos);
+    if (distanceToBandit < distance) {
+      distance = distanceToBandit;
+      closestBandit = bandit;
+    }
+  });
+
+  return closestBandit;
 }

@@ -5,7 +5,7 @@ import { Bandit } from "./Entities/bandit";
 import { Engine, Tile, TileMap, Vector } from "excalibur";
 import { myKeyboardManager } from "./main";
 import { BattleEvent, EventAction, EventActionSequence } from "./BattleEvents/BattleEvent";
-import { TimedTextMessage } from "./BattleEvents/Events/messageText";
+import { TextMessage, TimedTextMessage } from "./BattleEvents/Events/messageText";
 import { ExFSM, ExState } from "./lib/ExFSM";
 import { MoveActorsToNearestTile } from "./BattleEvents/Events/MoveActorsToNearestTile";
 import { GetMenuSelectionEvent } from "./BattleEvents/Events/GetMenuSelection";
@@ -21,6 +21,16 @@ import { EndBattleEvent } from "./BattleEvents/Events/endBattle";
 import { RangedLoadInEvent } from "./BattleEvents/Events/RangedLoadEvent";
 import { RangedAttackEvent } from "./BattleEvents/Events/RangedAttack";
 import { KnifeThrow } from "./BattleEvents/Events/KnifeThrow";
+import { MagicPoseEvent } from "./BattleEvents/Events/magicPose";
+import { CastTimeEvent } from "./BattleEvents/Events/castTime";
+import { timeeffectSS } from "./assets/resource";
+import { TimeEffectEvent } from "./BattleEvents/Events/timeEffectEvent";
+import { ApplyEffectEvent } from "./BattleEvents/Events/applyEffect";
+import { CastMatterEvent } from "./BattleEvents/Events/CastMatterEvent";
+import { MagicBulletEvent } from "./BattleEvents/Events/magicBulletEvent";
+import { MagicBulletEffectEvent } from "./BattleEvents/Events/magicBulletEffect";
+import { IncantationEvent } from "./BattleEvents/Events/magicIncantation";
+import { PipedTextMessage } from "./BattleEvents/Events/pipelineTextMessageEvent";
 
 const PLAYERGOESFIRST = true;
 
@@ -51,6 +61,7 @@ export class BattleManager {
     this.participants = [...this.participants, ...participants];
 
     for (let participant of participants) {
+      participant.setBattleManager(this);
       participant.inBattle = true;
       participant.vel = new Vector(0, 0);
       let closestTile = findTile(this.engine, participant);
@@ -240,11 +251,24 @@ class ExecuteAction extends ExState {
       ],
       item: [],
       defend: [],
-      time: [],
-      matter: [],
+      time: [
+        new MagicPoseEvent(player, player.currentTarget as Player | Bandit),
+        new IncantationEvent(player, player.currentTarget as Player | Bandit),
+        new CastTimeEvent(player, player.currentTarget as Player | Bandit),
+        new PipedTextMessage(2500, 25),
+        new TimeEffectEvent(player, player.currentTarget as Player | Bandit),
+        new ApplyEffectEvent(player, player.currentTarget as Player | Bandit),
+      ],
+      matter: [
+        new MagicPoseEvent(player, player.currentTarget as Player | Bandit),
+        new IncantationEvent(player, player.currentTarget as Player | Bandit),
+        new CastMatterEvent(player, player.currentTarget as Player | Bandit),
+        new PipedTextMessage(2500, 25),
+        new MagicBulletEvent(player, player.currentTarget as Player | Bandit),
+        //  new MagicBulletEffectEvent(player, player.currentTarget as Player | Bandit),
+        new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
+      ],
     };
-
-    console.log("action", myActions);
 
     let easactions: EventAction[] = [];
 
@@ -255,26 +279,25 @@ class ExecuteAction extends ExState {
       case "ranged":
         easactions = [...myActions.ranged];
         break;
+      case "time":
+        easactions = [...myActions.time];
+        break;
+      case "matter":
+        easactions = [...myActions.matter];
+        break;
+      case "defend":
+        //easactions = [...myActions.defend];
+        break;
+      case "item":
+        //easactions = [...myActions.item];
+        break;
     }
-
-    console.log("actions", easactions);
 
     sendEventSequence(
       new EventActionSequence({
         actions: easactions,
       })
     );
-
-    /* sendEventSequence(
-      new EventActionSequence({
-        actions: [
-          new LungeEvent(player, (player.currentTarget as Player | Bandit).pos, 20),
-          new ActionMeterEvent(player.scene!),
-          new MeleeAttack(player, player.currentTarget as Player | Bandit),
-          new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
-        ],
-      })
-    ); */
   }
 }
 

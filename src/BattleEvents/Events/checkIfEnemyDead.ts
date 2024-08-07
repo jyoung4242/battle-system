@@ -1,6 +1,6 @@
-import { Material } from "excalibur";
+import { EasingFunctions, Material } from "excalibur";
 import { Bandit } from "../../Entities/bandit";
-import { player, Player } from "../../Entities/player";
+import { player, Player, playerIdleBattle } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { Resources } from "../../assets/resource";
 import { model } from "../../UI";
@@ -48,41 +48,33 @@ export class CheckForEnemeyDead extends EventAction {
   init(): Promise<void> {
     return new Promise(async resolve => {
       if (this.who.hp <= 0) {
-        console.log("dissolving", this.who);
-
         this.who.graphics.material = this.dissolveMaterial as Material;
-        console.log("material", this.who.graphics.material);
-
         this.who.animationFSM.set("idle", this.who);
-        console.log("dissolving");
         const interval = setInterval(() => {
-          console.log("dissolving interval");
-
           this.who.graphics.material?.update(shader => {
             shader.trySetUniformFloat("u_rate", this.dissolveRate);
           });
 
           this.dissolveRate -= 0.1;
           if (this.dissolveRate <= 0) {
-            console.log("dissolved");
             clearInterval(interval);
-
-            setTimeout(() => {
+            setTimeout(async () => {
               const particIndex = player.battleManager?.participants.findIndex(p => p === this.who);
               if (particIndex && particIndex > -1) player.battleManager?.participants.splice(particIndex, 1);
               const turnindex = model.turnorder.findIndex(t => t === this.who);
               if (turnindex > -1) model.turnorder.splice(turnindex, 1);
               this.who.kill();
               this.who.graphics.material = null;
-
+              model.engineRef?.currentScene.camera.clearAllStrategies();
+              await model.engineRef?.currentScene.camera.move(player.pos, 750, EasingFunctions.EaseInOutCubic);
+              model.engineRef?.currentScene.camera.strategy.lockToActor(player);
+              if (player.animationFSM.get() != playerIdleBattle) player.animationFSM.set("battleIdle", player);
               player.battleManager?.endTurn();
-            }, 250);
+            }, 500);
             resolve();
           }
         }, 100);
       } else {
-        console.log("alive");
-
         player.battleManager?.endTurn();
         resolve();
       }

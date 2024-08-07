@@ -22,9 +22,30 @@ import flashingTile from "./flashingtile-Sheet.png";
 import targetMarker from "./marker.png";
 //@ts-ignore
 import dissolveTexture from "./DissolvePattern.png";
-
 //@ts-ignore
-import dissolveTexture from "./knife.png";
+import knife from "./knife.png";
+//@ts-ignore
+import time from "./time.png";
+//@ts-ignore
+import matter from "./matter.png";
+//@ts-ignore
+import magicbullet from "./magicbullet.png";
+//@ts-ignore
+import timeeffect from "./timeeffect.png";
+//@ts-ignore
+import bulleteffect from "./bulleteffect.png";
+//@ts-ignore
+import timeEmote from "./timeemote.png";
+//@ts-ignore
+import leftbutton from "./leftbutton.png";
+//@ts-ignore
+import rightbutton from "./rightbutton.png";
+//@ts-ignore
+import downbutton from "./downbutton.png";
+//@ts-ignore
+import upbutton from "./upbutton.png";
+//@ts-ignore
+import enterbutton from "./enterbutton.png";
 
 export const Resources = {
   map: new ImageSource(overworld),
@@ -37,7 +58,18 @@ export const Resources = {
   flashingtile: new ImageSource(flashingTile),
   marker: new ImageSource(targetMarker),
   dissolveTexture: new ImageSource(dissolveTexture),
-  knife: new ImageSource(dissolveTexture),
+  knife: new ImageSource(knife),
+  time: new ImageSource(time),
+  matter: new ImageSource(matter),
+  magicbullet: new ImageSource(magicbullet),
+  timeeffect: new ImageSource(timeeffect),
+  bulleteffect: new ImageSource(bulleteffect),
+  timeEmote: new ImageSource(timeEmote),
+  leftbutton: new ImageSource(leftbutton),
+  rightbutton: new ImageSource(rightbutton),
+  downbutton: new ImageSource(downbutton),
+  upbutton: new ImageSource(upbutton),
+  enterbutton: new ImageSource(enterbutton),
 } as const; // < -- as const is important to get strong typing!
 
 export const flashingTileSS = SpriteSheet.fromImageSource({
@@ -47,6 +79,56 @@ export const flashingTileSS = SpriteSheet.fromImageSource({
     columns: 8,
     spriteWidth: 16,
     spriteHeight: 16,
+  },
+});
+
+export const timeMagicSS = SpriteSheet.fromImageSource({
+  image: Resources.time,
+  grid: {
+    rows: 1,
+    columns: 22,
+    spriteWidth: 64,
+    spriteHeight: 64,
+  },
+});
+
+export const matterMagicSS = SpriteSheet.fromImageSource({
+  image: Resources.matter,
+  grid: {
+    rows: 1,
+    columns: 17,
+    spriteWidth: 64,
+    spriteHeight: 64,
+  },
+});
+
+export const magicBulletSS = SpriteSheet.fromImageSource({
+  image: Resources.magicbullet,
+  grid: {
+    rows: 1,
+    columns: 6,
+    spriteWidth: 16,
+    spriteHeight: 16,
+  },
+});
+
+export const bulletEffectSS = SpriteSheet.fromImageSource({
+  image: Resources.bulleteffect,
+  grid: {
+    rows: 1,
+    columns: 6,
+    spriteWidth: 16,
+    spriteHeight: 16,
+  },
+});
+
+export const timeeffectSS = SpriteSheet.fromImageSource({
+  image: Resources.timeeffect,
+  grid: {
+    rows: 1,
+    columns: 7,
+    spriteWidth: 64,
+    spriteHeight: 64,
   },
 });
 

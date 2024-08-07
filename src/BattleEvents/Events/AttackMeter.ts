@@ -2,6 +2,7 @@ import { Scene, Vector } from "excalibur";
 import { AttackMeter } from "../../Entities/attackMeter";
 import { myKeyboardManager } from "../../main";
 import { EventAction } from "../BattleEvent";
+import { model } from "../../UI";
 
 export class ActionMeterEvent extends EventAction {
   constructor(public scene: Scene) {
@@ -24,7 +25,8 @@ export class ActionMeterEvent extends EventAction {
         },
         { once: true }
       );
-
+      model.showBattleMenu = false;
+      model.showBattleQueue = false;
       const meterPosition = pipeline.cameraPosition as Vector;
       const meterInstance = new AttackMeter(meterPosition);
       meterInstance.init();

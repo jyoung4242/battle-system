@@ -12,7 +12,6 @@ export class MeleeTarget extends ExState {
   }
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
-    console.log("params", params);
     model.debug = "meleeTarget";
     const engine = params[0] as Engine;
     const meter = params[1][0] as AttackMeter;

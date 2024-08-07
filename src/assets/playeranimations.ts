@@ -336,3 +336,75 @@ export const dudeRangeIdleDown = new Animation({
     },
   ],
 });
+
+export const dudeCastingRight = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS1.getSprite(5, 1),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(6, 1),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(7, 1),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeCastingLeft = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS1.getSprite(5, 3),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(6, 3),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(7, 3),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeCastingUp = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS1.getSprite(5, 2),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(6, 2),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(7, 2),
+      duration: 75,
+    },
+  ],
+});
+
+export const dudeCastingDown = new Animation({
+  strategy: AnimationStrategy.Freeze,
+  frames: [
+    {
+      graphic: playerSS1.getSprite(5, 0),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(6, 0),
+      duration: 75,
+    },
+    {
+      graphic: playerSS1.getSprite(7, 0),
+      duration: 75,
+    },
+  ],
+});

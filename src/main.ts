@@ -15,12 +15,15 @@ import { noBindings } from "./lib/Keyboard/keybindings/noBindings";
 import { TargetBinding } from "./lib/Keyboard/keybindings/targetSelect";
 import { MeleeBindings } from "./lib/Keyboard/keybindings/meleeBindings";
 import { MeleeTarget } from "./lib/Keyboard/keybindings/meleeTarget";
-import { meter } from "./Entities/attackMeter";
+import { IncantationSounds } from "./lib/incantation";
 
 export let sndPlugin = new JsfxrResource();
 sndPlugin.init(); //initializes the JSFXR library
 for (const sound in sounds) {
   sndPlugin.loadSoundConfig(sound, sounds[sound]);
+}
+for (const sound in IncantationSounds) {
+  sndPlugin.loadSoundConfig(sound, IncantationSounds[sound]);
 }
 
 await UI.create(document.body, model, template).attached;

@@ -3,9 +3,7 @@ import { Actor, Color, Engine, Rectangle, Tile, TileMap, Vector } from "excalibu
 import cursor from "./assets/cursor.svg";
 import { sndPlugin } from "./main";
 import { Bandit } from "./Entities/bandit";
-import { Player, player } from "./Entities/player";
-import { flashing } from "./assets/flashingtileanimations";
-import { selector, Selector } from "./Entities/selector";
+import { Player } from "./Entities/player";
 import { mainOptions, menuItem, menuOptions } from "./Menu/options";
 import { UI } from "@peasy-lib/peasy-ui";
 import { MeleeSequence } from "./Melee/Sequences/sequence";
@@ -47,6 +45,7 @@ export const model = {
     if (this.currentTarget) return true;
     else return false;
   },
+
   currentTarget: undefined as Bandit | Player | undefined,
   battlemenu: mainOptions as menuItem[],
   cursorIndex: 0,
@@ -402,7 +401,9 @@ export function menuSelect(engine: Engine) {
       model.currentBattleItem.name != "Move" &&
       model.currentBattleItem.name != "  Melee" &&
       model.currentBattleItem.name != "Attack" &&
-      model.currentBattleItem.name != "  Ranged"
+      model.currentBattleItem.name != "  Ranged" &&
+      model.currentBattleItem.name != "  Time" &&
+      model.currentBattleItem.name != "  Matter"
     ) {
       return;
     }

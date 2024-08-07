@@ -17,26 +17,27 @@ export class KnifeThrow extends EventAction {
       let camera = this.who.scene?.camera;
       if (!camera) return;
       let handler = async (e: Event) => {
-        console.log("knife hit event");
-
         if (knifehit) {
-          this.target.actions.runAction(new Flash(this.target, Color.Red, 750));
+          await this.target.actions.runAction(new Flash(this.target, Color.Red, 750)).toPromise();
           (this.target as Bandit).takeDamage(10);
           camera.shake(2, 2, 250);
         } else {
-          this.target.actions.runAction(new Flash(this.target, Color.White, 750));
+          await this.target.actions.runAction(new Flash(this.target, Color.White, 750)).toPromise();
         }
         this.who.animationFSM.set("battleIdle", this.who);
+        model.showBattleQueue = true;
         camera.clearAllStrategies();
-        await camera.move(this.who.pos, 500, EasingFunctions.EaseInOutCubic);
-        camera.strategy.lockToActor(this.who);
+        await camera.move(this.target.pos, 250, EasingFunctions.EaseInOutCubic);
+        camera.strategy.lockToActor(this.target);
         resolve();
       };
+
       document.addEventListener("knifehit", handler, { once: true });
       let knife = new Knife(this.who, this.target);
-      console.log("knife", knife);
       knife.init(model.engineRef as Engine);
       model.engineRef!.currentScene.add(knife);
+      model.showBattleMenu = false;
+      model.showBattleQueue = false;
     });
   }
 }

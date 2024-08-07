@@ -7,6 +7,10 @@ import {
   dudeAttackLeft,
   dudeAttackRight,
   dudeAttackUp,
+  dudeCastingDown,
+  dudeCastingLeft,
+  dudeCastingRight,
+  dudeCastingUp,
   dudeIdleDown,
   dudeIdleLeft,
   dudeIdleRight,
@@ -25,16 +29,14 @@ import {
   dudeWalkUp,
 } from "../assets/playeranimations";
 import { Bandit } from "./bandit";
-import { menuSelect, model, moveCursorDown, moveCursorUp } from "../UI";
 import { EventActionSequence } from "../BattleEvents/BattleEvent";
 import { TimedTextMessage } from "../BattleEvents/Events/messageText";
 import { ActorMoveEvent } from "../BattleEvents/Events/ActorMoveEvent";
 import { MeleeSequence } from "../Melee/Sequences/sequence";
 import { DancingCranesintheMoonlight, WhisperingLeafontheWind } from "../Melee/Forms/forms";
-import { myKeyboardManager } from "../main";
 import { GetMenuSelectionEvent } from "../BattleEvents/Events/GetMenuSelection";
-import { Selector, selector } from "./selector";
 import { GetMeleeSelectionEvent } from "../BattleEvents/Events/meleeSelection";
+import { model } from "../UI";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -52,6 +54,8 @@ export class Player extends Actor {
   playerSpeed: number = 50;
   meleeRange: number = 2;
   rangedAttackRange: number = 6;
+  timeSpellRange: number = 7;
+  matterSpellRange: number = 6;
 
   // all other class props
 
@@ -112,7 +116,15 @@ export class Player extends Actor {
     this.graphics.use(dudeIdleDown);
     Engine.currentScene.camera.strategy.lockToActor(this);
     Engine.currentScene.camera.zoom = 3;
-    this.animationFSM.register(playerIdle, playerWalking, playerAttack, playerIdleBattle, playerRangedLoadIn, playerRangedAttack);
+    this.animationFSM.register(
+      playerIdle,
+      playerWalking,
+      playerAttack,
+      playerIdleBattle,
+      playerRangedLoadIn,
+      playerRangedAttack,
+      playerMagicCast
+    );
     this.animationFSM.set("idle", this);
     this.sequence[0].forms.push(new WhisperingLeafontheWind(), new DancingCranesintheMoonlight());
   }
@@ -154,8 +166,11 @@ export class Player extends Actor {
     //get entity at tile location
     const { x, y } = tile.pos;
     let bandit = engine.currentScene.entities.find(ent => {
+      console.log("entity tile check", ent, x, y);
+
       return (ent as Actor).pos.x == x + 8 && (ent as Actor).pos.y == y;
     });
+    console.log(bandit);
 
     if (bandit) {
       //found target
@@ -185,8 +200,10 @@ export class Player extends Actor {
     //get entity at tile location
     const { x, y } = tile.pos;
     let bandit = engine.currentScene.entities.find(ent => {
+      console.log("entity tile check", ent, x, y);
       return (ent as Actor).pos.x == x + 8 && (ent as Actor).pos.y == y;
     });
+    console.log(bandit);
 
     if (bandit) {
       const message = `${bandit.name} is selected!`;
@@ -199,6 +216,39 @@ export class Player extends Actor {
       this.currentTarget = bandit as Bandit;
       model.currentTarget = bandit as Bandit;
       this.battleManager.fsm.set("executeAction", this.battleManager, "ranged");
+    } else {
+      //no target
+      if (!this.battleManager) return;
+      this.battleManager.sendEventSequence(
+        new EventActionSequence({
+          actions: [new TimedTextMessage("No Enemy Selected!", 1250, 25)],
+        })
+      );
+      this.battleManager.endTurn();
+      return;
+    }
+  }
+
+  setMagicTarget(engine: Engine, tile: Tile, spell: "time" | "matter") {
+    //get entity at tile location
+    const { x, y } = tile.pos;
+    let bandit = engine.currentScene.entities.find(ent => {
+      console.log("entity tile check", ent, x, y);
+      return (ent as Actor).pos.x == x + 8 && (ent as Actor).pos.y == y;
+    });
+    console.log(bandit);
+
+    if (bandit) {
+      const message = `${bandit.name} is selected!`;
+      if (!this.battleManager) return;
+      const EAS = this.battleManager.sendEventSequence(
+        new EventActionSequence({
+          actions: [new TimedTextMessage(message, 1250, 25)],
+        })
+      );
+      this.currentTarget = bandit as Bandit;
+      model.currentTarget = bandit as Bandit;
+      this.battleManager.fsm.set("executeAction", this.battleManager, spell);
     } else {
       //no target
       if (!this.battleManager) return;
@@ -407,7 +457,7 @@ class idleBattleAnimation extends ExState {
     player.graphics.use(animation);
   }
 }
-const playerIdleBattle = new idleBattleAnimation();
+export const playerIdleBattle = new idleBattleAnimation();
 
 function findNearestEnemy(who: Player, enemies: Bandit[]): Bandit {
   let nearest = enemies[0];
@@ -459,8 +509,6 @@ class rangedAttack extends ExState {
     dudeRangeAttackUp,
   };
 
-  playerSpeed = 50;
-
   constructor() {
     super("rangedAttack");
   }
@@ -474,9 +522,35 @@ class rangedAttack extends ExState {
   update(...params: any): void | Promise<void> {
     const player = params[0];
 
-    this.playerSpeed = player.playerSpeed;
     let animation = this.animations["dudeRangeAttack" + player.directionFacing];
     player.graphics.use(animation);
   }
 }
 const playerRangedAttack = new rangedAttack();
+
+class magicAttack extends ExState {
+  animations: Record<string, Animation> = {
+    dudeCastingDown,
+    dudeCastingLeft,
+    dudeCastingRight,
+    dudeCastingUp,
+  };
+
+  constructor() {
+    super("magicCast");
+  }
+  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    const player = params[0];
+    let animation = this.animations["dudeCasting" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+  exit(_next: ExState | null, ...params: any): void | Promise<void> {}
+
+  update(...params: any): void | Promise<void> {
+    const player = params[0];
+
+    let animation = this.animations["dudeCasting" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+}
+const playerMagicCast = new magicAttack();
