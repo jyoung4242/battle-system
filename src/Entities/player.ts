@@ -49,7 +49,7 @@ export class Player extends Actor {
   // game properties of entity
   initative: number = 2;
   speed: number = 3;
-  hp: number = 20;
+  hp: number = 1;
   hpmax: number = 20;
   playerSpeed: number = 50;
   meleeRange: number = 2;
@@ -94,7 +94,7 @@ export class Player extends Actor {
   attackButtonLatch: boolean = false;
   isAttackAnimationRunning: boolean = false;
   held_direction: string[] = [];
-  currentTarget: Bandit | null = null;
+  currentTarget: Bandit | Player | null = null;
   sequence: MeleeSequence[] = [new MeleeSequence("melee sequence 1", 1)];
   constructor() {
     super({

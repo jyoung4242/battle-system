@@ -7,6 +7,16 @@ import { Player } from "./Entities/player";
 import { mainOptions, menuItem, menuOptions } from "./Menu/options";
 import { UI } from "@peasy-lib/peasy-ui";
 import { MeleeSequence } from "./Melee/Sequences/sequence";
+import { Inventory } from "./UIComponents/inventory";
+
+//@ts-ignore
+import book from "./assets/boook.png";
+//@ts-ignore
+import potion from "./assets/redpotion.png";
+//@ts-ignore
+import key from "./assets/key.png";
+//@ts-ignore
+import coin from "./assets/coin.png";
 
 //Components
 import { MeleeMenu } from "./UIComponents/MeleeMenu";
@@ -14,6 +24,33 @@ import { MeleeMenu } from "./UIComponents/MeleeMenu";
 let soundPlaying: boolean = false;
 
 export const model = {
+  Inventory,
+  inventoryDefault: {
+    isShowing: false,
+    inventory: {
+      Potion: {
+        name: "Potion",
+        qty: 3,
+        sprite: potion,
+      },
+      book: {
+        name: "Book",
+        qty: 1,
+        sprite: book,
+      },
+      key: {
+        name: "Key",
+        qty: 2,
+        sprite: key,
+      },
+      coin: {
+        name: "Coin",
+        qty: 42,
+        sprite: coin,
+      },
+    },
+  },
+  inventory: undefined as undefined | Inventory,
   showEndModal: false,
   debug: "",
   attackMeterPosition: new Vector(0, 0),
@@ -287,6 +324,7 @@ export const template = `
         </battle-menu>
         
         <\${MeleeMenu:meleeMenu === meleedefault }>
+        <\${Inventory:inventory === inventoryDefault }>
 
         <player-card \${===showBattleQueue}>
             <div class="cardavatar" style="background-color: \${currentTurn.avatarbackground};" >
@@ -397,14 +435,7 @@ export function menuSelect(engine: Engine) {
       soundPlaying = false;
     }, 100);
 
-    if (
-      model.currentBattleItem.name != "Move" &&
-      model.currentBattleItem.name != "  Melee" &&
-      model.currentBattleItem.name != "Attack" &&
-      model.currentBattleItem.name != "  Ranged" &&
-      model.currentBattleItem.name != "  Time" &&
-      model.currentBattleItem.name != "  Matter"
-    ) {
+    if (model.currentBattleItem.name === "Defend") {
       return;
     }
 

@@ -152,8 +152,9 @@ const item: menuItem = {
   isDisabled: false,
   description: "Use Items",
   styleText: "",
-  action: () => {
-    console.log("item");
+  action: (...params: any) => {
+    const engine = params[0];
+    if (player.battleManager) player.battleManager.fsm.set("executeAction", engine, "item");
   },
   get submenu(): string {
     //@ts-ignore

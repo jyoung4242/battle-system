@@ -31,6 +31,9 @@ import { MagicBulletEvent } from "./BattleEvents/Events/magicBulletEvent";
 import { MagicBulletEffectEvent } from "./BattleEvents/Events/magicBulletEffect";
 import { IncantationEvent } from "./BattleEvents/Events/magicIncantation";
 import { PipedTextMessage } from "./BattleEvents/Events/pipelineTextMessageEvent";
+import { ShowInventoryEvent } from "./BattleEvents/Events/showInventory";
+import { CloseInventoryEvent } from "./BattleEvents/Events/closeInventory";
+import { PotionEffectEvent } from "./BattleEvents/Events/itemEffectEvent";
 
 const PLAYERGOESFIRST = true;
 
@@ -235,6 +238,10 @@ class ExecuteAction extends ExState {
     const action = params[1];
     console.log("param action: ", action);
 
+    if (player.currentTarget == null) {
+      player.currentTarget = player;
+    }
+
     myActions = {
       melee: [
         new LungeEvent(player, (player.currentTarget as Player | Bandit).pos, 20),
@@ -249,7 +256,12 @@ class ExecuteAction extends ExState {
         new KnifeThrow(player, player.currentTarget as Player | Bandit),
         new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
       ],
-      item: [],
+      item: [
+        new ShowInventoryEvent(player, player.currentTarget as Player | Bandit),
+        new CloseInventoryEvent(player, player.currentTarget as Player | Bandit),
+        new PipedTextMessage(2500, 25),
+        new PotionEffectEvent(player, player.currentTarget as Player | Bandit),
+      ],
       defend: [],
       time: [
         new MagicPoseEvent(player, player.currentTarget as Player | Bandit),
@@ -265,7 +277,6 @@ class ExecuteAction extends ExState {
         new CastMatterEvent(player, player.currentTarget as Player | Bandit),
         new PipedTextMessage(2500, 25),
         new MagicBulletEvent(player, player.currentTarget as Player | Bandit),
-        //  new MagicBulletEffectEvent(player, player.currentTarget as Player | Bandit),
         new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
       ],
     };
@@ -289,7 +300,7 @@ class ExecuteAction extends ExState {
         //easactions = [...myActions.defend];
         break;
       case "item":
-        //easactions = [...myActions.item];
+        easactions = [...myActions.item];
         break;
     }
 
@@ -307,6 +318,7 @@ class EndTurn extends ExState {
   }
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    debugger;
     const BM = params[0];
     console.log("end turn");
     //check for end of battle

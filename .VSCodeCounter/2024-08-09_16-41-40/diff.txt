@@ -1,0 +1,95 @@
+Date : 2024-08-09 16:41:40
+Directory : c:\programming\game systems\battle system\src
+Total : 57 files,  3467 codes, 161 comments, 414 blanks, all 4042 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| TypeScript |         57 |      3,467 |        161 |        414 |      4,042 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                          | files      | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                             |         57 |      3,467 |        161 |        414 |      4,042 |
+| . (Files)                                                                                     |          3 |        326 |         16 |         44 |        386 |
+| BattleEvents                                                                                  |         26 |        895 |         24 |        133 |      1,052 |
+| BattleEvents (Files)                                                                          |          1 |          1 |          0 |          0 |          1 |
+| BattleEvents\Events                                                                           |         25 |        894 |         24 |        133 |      1,051 |
+| Entities                                                                                      |          6 |        582 |         48 |         88 |        718 |
+| Menu                                                                                          |          1 |         53 |         -3 |          3 |         53 |
+| UIComponents                                                                                  |          1 |        302 |          9 |         30 |        341 |
+| assets                                                                                        |          8 |        635 |         18 |         30 |        683 |
+| lib                                                                                           |         12 |        674 |         49 |         86 |        809 |
+| lib (Files)                                                                                   |          2 |        550 |         48 |         67 |        665 |
+| lib\Actions                                                                                   |          1 |         71 |          0 |         13 |         84 |
+| lib\Keyboard                                                                                  |          9 |         53 |          1 |          6 |         60 |
+| lib\Keyboard (Files)                                                                          |          2 |          3 |          0 |          1 |          4 |
+| lib\Keyboard\keybindings                                                                      |          7 |         50 |          1 |          5 |         56 |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                      | language   | code       | comment    | blank      | total      |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\programming\game systems\battle system\src\BattleEvents\BattleEvent.ts                     | TypeScript |          1 |          0 |          0 |          1 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\AttackMeter.ts              | TypeScript |         34 |          0 |          3 |         37 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\CastMatterEvent.ts          | TypeScript |         36 |          0 |          5 |         41 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\DissolveEvent.ts            | TypeScript |         57 |          1 |          8 |         66 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\GetMenuSelection.ts         | TypeScript |         21 |          0 |          1 |         22 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\KnifeThrow.ts               | TypeScript |         40 |          0 |          4 |         44 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\LungeEvent.ts               | TypeScript |         41 |          2 |          6 |         49 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\MoveActorsToNearestTile.ts  | TypeScript |         -1 |          1 |          0 |          0 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\RangedAttack.ts             | TypeScript |         28 |          0 |          5 |         33 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\RangedLoadEvent.ts          | TypeScript |         17 |          0 |          3 |         20 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\applyEffect.ts              | TypeScript |         23 |          0 |          4 |         27 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\castTime.ts                 | TypeScript |         37 |          0 |          5 |         42 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\checkIfEnemyDead.ts         | TypeScript |         74 |          1 |          9 |         84 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\closeBattleMenu.ts          | TypeScript |         13 |          0 |          3 |         16 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\closeInventory.ts           | TypeScript |         35 |          2 |          4 |         41 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\endBattle.ts                | TypeScript |         16 |          0 |          4 |         20 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\itemEffectEvent.ts          | TypeScript |         64 |          7 |         10 |         81 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\magicBulletEffect.ts        | TypeScript |         38 |          0 |          7 |         45 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\magicBulletEvent.ts         | TypeScript |         57 |          0 |          8 |         65 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\magicIncantation.ts         | TypeScript |         46 |          2 |          6 |         54 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\magicPose.ts                | TypeScript |         26 |          2 |          5 |         33 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\meleeAttack.ts              | TypeScript |         69 |          3 |         11 |         83 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\moveCamera.ts               | TypeScript |         19 |          0 |          4 |         23 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\pipelineTextMessageEvent.ts | TypeScript |         27 |          1 |          5 |         33 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\showInventory.ts            | TypeScript |         35 |          2 |          7 |         44 |
+| c:\programming\game systems\battle system\src\BattleEvents\Events\timeEffectEvent.ts          | TypeScript |         42 |          0 |          6 |         48 |
+| c:\programming\game systems\battle system\src\BattleManager.ts                                | TypeScript |        229 |          9 |         32 |        270 |
+| c:\programming\game systems\battle system\src\Entities\attackMeter.ts                         | TypeScript |        114 |          5 |         22 |        141 |
+| c:\programming\game systems\battle system\src\Entities\bandit.ts                              | TypeScript |        152 |         36 |         23 |        211 |
+| c:\programming\game systems\battle system\src\Entities\knife.ts                               | TypeScript |         35 |          0 |          4 |         39 |
+| c:\programming\game systems\battle system\src\Entities\magicBullet.ts                         | TypeScript |         35 |          0 |          4 |         39 |
+| c:\programming\game systems\battle system\src\Entities\player.ts                              | TypeScript |        209 |          5 |         25 |        239 |
+| c:\programming\game systems\battle system\src\Entities\selector.ts                            | TypeScript |         37 |          2 |         10 |         49 |
+| c:\programming\game systems\battle system\src\Menu\options.ts                                 | TypeScript |         53 |         -3 |          3 |         53 |
+| c:\programming\game systems\battle system\src\UI.ts                                           | TypeScript |         87 |          5 |          9 |        101 |
+| c:\programming\game systems\battle system\src\UIComponents\inventory.ts                       | TypeScript |        302 |          9 |         30 |        341 |
+| c:\programming\game systems\battle system\src\assets\bulleteffect.ts                          | TypeScript |         31 |          0 |          2 |         33 |
+| c:\programming\game systems\battle system\src\assets\magicbullet.ts                           | TypeScript |         31 |          0 |          2 |         33 |
+| c:\programming\game systems\battle system\src\assets\matterMagicanimation.ts                  | TypeScript |         75 |          0 |          2 |         77 |
+| c:\programming\game systems\battle system\src\assets\playeranimations.ts                      | TypeScript |        184 |          0 |         12 |        196 |
+| c:\programming\game systems\battle system\src\assets\potionEffectAnimation.ts                 | TypeScript |         95 |          0 |          2 |         97 |
+| c:\programming\game systems\battle system\src\assets\resource.ts                              | TypeScript |         89 |         18 |          6 |        113 |
+| c:\programming\game systems\battle system\src\assets\timeAnimations.ts                        | TypeScript |         95 |          0 |          2 |         97 |
+| c:\programming\game systems\battle system\src\assets\timeeffect.ts                            | TypeScript |         35 |          0 |          2 |         37 |
+| c:\programming\game systems\battle system\src\lib\Actions\flash.ts                            | TypeScript |         71 |          0 |         13 |         84 |
+| c:\programming\game systems\battle system\src\lib\ExFSM.ts                                    | TypeScript |          6 |          0 |          1 |          7 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\Keyboard.ts                        | TypeScript |         24 |          0 |          8 |         32 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keybindings\meleeBindings.ts       | TypeScript |          1 |          0 |          0 |          1 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keybindings\meleeTarget.ts         | TypeScript |         23 |          0 |          5 |         28 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keybindings\menuBinding.ts         | TypeScript |          1 |          0 |         -1 |          0 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keybindings\noBindings.ts          | TypeScript |          4 |          0 |          0 |          4 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keybindings\playerBinding.ts       | TypeScript |          2 |          0 |         -1 |          1 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keybindings\selectorBinding.ts     | TypeScript |         18 |          0 |          3 |         21 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keybindings\targetSelect.ts        | TypeScript |          1 |          1 |         -1 |          1 |
+| c:\programming\game systems\battle system\src\lib\Keyboard\keyboard.ts                        | TypeScript |        -21 |          0 |         -7 |        -28 |
+| c:\programming\game systems\battle system\src\lib\incantation.ts                              | TypeScript |        544 |         48 |         66 |        658 |
+| c:\programming\game systems\battle system\src\main.ts                                         | TypeScript |         10 |          2 |          3 |         15 |
+| Total                                                                                         |            |      3,467 |        161 |        414 |      4,042 |
++-----------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+

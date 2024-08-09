@@ -26,6 +26,13 @@ export class ExFSM {
     return generatedStates;
   }
 
+  isRegistered(state: string | ExState): boolean {
+    if (typeof state === "string") {
+      return this.states.has(state);
+    }
+    return this.states.has(state.name);
+  }
+
   set(state: string | ExState, ...params: any[]): void | Promise<void> {
     let entering: void | Promise<void>;
     let leaving: void | Promise<void> | null;

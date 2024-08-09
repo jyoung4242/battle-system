@@ -17,8 +17,12 @@ export class KeyboardManager {
     return this.fsm.get();
   }
 
-  registerOwner(state: ExState) {
+  registerOwner(state: string | ExState) {
     this.fsm.register(state);
+  }
+
+  isRegistered(state: string | ExState): boolean {
+    return this.fsm.isRegistered(state);
   }
 
   public update() {

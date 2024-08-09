@@ -1,5 +1,4 @@
 // resources.ts
-import { AsepriteResource } from "@excaliburjs/plugin-aseprite";
 import { ImageSource, Loader, SpriteSheet } from "excalibur";
 
 //@ts-ignore
@@ -46,6 +45,16 @@ import downbutton from "./downbutton.png";
 import upbutton from "./upbutton.png";
 //@ts-ignore
 import enterbutton from "./enterbutton.png";
+//@ts-ignore
+import book from "./boook.png";
+//@ts-ignore
+import potion from "./redpotion.png";
+//@ts-ignore
+import key from "./key.png";
+//@ts-ignore
+import coin from "./coin.png";
+//@ts-ignore
+import potioneffectSS from "./potioneffect.png";
 
 export const Resources = {
   map: new ImageSource(overworld),
@@ -70,6 +79,11 @@ export const Resources = {
   downbutton: new ImageSource(downbutton),
   upbutton: new ImageSource(upbutton),
   enterbutton: new ImageSource(enterbutton),
+  book: new ImageSource(book),
+  potion: new ImageSource(potion),
+  key: new ImageSource(key),
+  coin: new ImageSource(coin),
+  potioneffect: new ImageSource(potioneffectSS),
 } as const; // < -- as const is important to get strong typing!
 
 export const flashingTileSS = SpriteSheet.fromImageSource({
@@ -79,6 +93,16 @@ export const flashingTileSS = SpriteSheet.fromImageSource({
     columns: 8,
     spriteWidth: 16,
     spriteHeight: 16,
+  },
+});
+
+export const potionEffectSS = SpriteSheet.fromImageSource({
+  image: Resources.potioneffect,
+  grid: {
+    rows: 1,
+    columns: 22,
+    spriteWidth: 64,
+    spriteHeight: 64,
   },
 });
 

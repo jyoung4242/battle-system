@@ -7,7 +7,7 @@ import { bandit1, bandit2, bandit3 } from "./Entities/bandit";
 import { model, template } from "./UI";
 import { JsfxrResource } from "@excaliburjs/plugin-jsfxr";
 import { sounds } from "./lib/sounds";
-import { KeyboardManager } from "./lib/Keyboard/keyboard";
+import { KeyboardManager } from "./lib/Keyboard/Keyboard";
 import { SelectorBinding } from "./lib/Keyboard/keybindings/selectorBinding";
 import { PlayerBinding } from "./lib/Keyboard/keybindings/playerBinding";
 import { GameMenuControl } from "./lib/Keyboard/keybindings/menuBinding";
@@ -46,6 +46,11 @@ myKeyboardManager.registerOwner(new MeleeBindings());
 myKeyboardManager.registerOwner(new MeleeTarget());
 myKeyboardManager.setOwner("player");
 
+//@ts-ignore
+model.inventory.model.init(myKeyboardManager, game);
+console.log(model.inventory);
+console.log(model);
+
 const tilemap = new TileMap({
   tileWidth: 16,
   tileHeight: 16,
@@ -68,5 +73,7 @@ game.add(player);
 game.add(bandit1);
 game.add(bandit2);
 game.add(bandit3);
+
+console.log(player);
 
 //game.add(meter);
