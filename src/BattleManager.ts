@@ -34,6 +34,7 @@ import { PipedTextMessage } from "./BattleEvents/Events/pipelineTextMessageEvent
 import { ShowInventoryEvent } from "./BattleEvents/Events/showInventory";
 import { CloseInventoryEvent } from "./BattleEvents/Events/closeInventory";
 import { PotionEffectEvent } from "./BattleEvents/Events/itemEffectEvent";
+import { ShowPlayerEmote } from "./BattleEvents/Events/showPlayerEmote";
 
 const PLAYERGOESFIRST = true;
 
@@ -262,7 +263,7 @@ class ExecuteAction extends ExState {
         new PipedTextMessage(2500, 25),
         new PotionEffectEvent(player, player.currentTarget as Player | Bandit),
       ],
-      defend: [],
+      defend: [new ShowPlayerEmote(player, player.currentTarget as Player | Bandit), new PipedTextMessage(2500, 25)],
       time: [
         new MagicPoseEvent(player, player.currentTarget as Player | Bandit),
         new IncantationEvent(player, player.currentTarget as Player | Bandit),
@@ -297,7 +298,7 @@ class ExecuteAction extends ExState {
         easactions = [...myActions.matter];
         break;
       case "defend":
-        //easactions = [...myActions.defend];
+        easactions = [...myActions.defend];
         break;
       case "item":
         easactions = [...myActions.item];
@@ -318,7 +319,6 @@ class EndTurn extends ExState {
   }
 
   enter(_previous: ExState | null, ...params: any): void | Promise<void> {
-    debugger;
     const BM = params[0];
     console.log("end turn");
     //check for end of battle

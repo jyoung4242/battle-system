@@ -435,10 +435,6 @@ export function menuSelect(engine: Engine) {
       soundPlaying = false;
     }, 100);
 
-    if (model.currentBattleItem.name === "Defend") {
-      return;
-    }
-
     // this sends the selection over to GetMenuSelection.ts
     const menuCustomevent = new CustomEvent("battleMenuSelection", {
       detail: {

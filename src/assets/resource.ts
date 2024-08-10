@@ -36,6 +36,8 @@ import bulleteffect from "./bulleteffect.png";
 //@ts-ignore
 import timeEmote from "./timeemote.png";
 //@ts-ignore
+import shieldemote from "./emote_shield.png";
+//@ts-ignore
 import leftbutton from "./leftbutton.png";
 //@ts-ignore
 import rightbutton from "./rightbutton.png";
@@ -84,6 +86,7 @@ export const Resources = {
   key: new ImageSource(key),
   coin: new ImageSource(coin),
   potioneffect: new ImageSource(potioneffectSS),
+  shieldEmote: new ImageSource(shieldemote),
 } as const; // < -- as const is important to get strong typing!
 
 export const flashingTileSS = SpriteSheet.fromImageSource({

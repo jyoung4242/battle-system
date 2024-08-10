@@ -37,6 +37,7 @@ import { DancingCranesintheMoonlight, WhisperingLeafontheWind } from "../Melee/F
 import { GetMenuSelectionEvent } from "../BattleEvents/Events/GetMenuSelection";
 import { GetMeleeSelectionEvent } from "../BattleEvents/Events/meleeSelection";
 import { model } from "../UI";
+import { Resources } from "../assets/resource";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -49,7 +50,7 @@ export class Player extends Actor {
   // game properties of entity
   initative: number = 2;
   speed: number = 3;
-  hp: number = 1;
+  hp: number = 20;
   hpmax: number = 20;
   playerSpeed: number = 50;
   meleeRange: number = 2;
@@ -96,6 +97,8 @@ export class Player extends Actor {
   held_direction: string[] = [];
   currentTarget: Bandit | Player | null = null;
   sequence: MeleeSequence[] = [new MeleeSequence("melee sequence 1", 1)];
+  emote: Actor | undefined;
+  emoteSprite: Sprite | undefined;
   constructor() {
     super({
       width: 16,
@@ -108,8 +111,18 @@ export class Player extends Actor {
     this.damageVisual = new Label({
       color: this.color,
       text: "0",
-      pos: new Vector(0, 0),
+      pos: new Vector(-12, -8),
     });
+    //add child actor for emotes
+    this.emoteSprite = Resources.shieldEmote.toSprite();
+    this.emote = new Actor({
+      width: 8,
+      height: 8,
+      pos: new Vector(2, -16),
+    });
+    this.emote.graphics.use(this.emoteSprite);
+    this.addChild(this.emote);
+    this.emote.graphics.hide();
   }
 
   onInitialize(Engine: Engine) {
@@ -135,6 +148,26 @@ export class Player extends Actor {
     (this.damageVisual as Label).color = Color.Red;
     this.hp -= hp;
     this.addChild(this.damageVisual as Label);
+  }
+
+  heal(hp: number) {
+    this.takingDamage = true;
+    (this.damageVisual as Label).text = `+${hp}`;
+    (this.damageVisual as Label).color = Color.White;
+    this.hp += hp;
+    if (this.hp > this.hpmax) {
+      this.hp = this.hpmax;
+    }
+    this.addChild(this.damageVisual as Label);
+  }
+
+  applyStatusEffect() {
+    (this.emoteSprite as Sprite).scale = new Vector(0.5, 0.5);
+    this.emote?.graphics.use(this.emoteSprite as Sprite);
+  }
+
+  removeStatusEffect() {
+    this.emote?.graphics.hide();
   }
 
   newTileLocation(tile: Tile) {
@@ -305,9 +338,9 @@ export class Player extends Actor {
 
   onPreUpdate(Engine: Engine) {
     if (this.takingDamage) {
-      (this.damageVisual as Label).pos.y -= 1;
+      (this.damageVisual as Label).pos.y -= 0.5;
       this.damagetiks++;
-      if (this.damagetiks > 25) {
+      if (this.damagetiks > 45) {
         this.removeChild(this.damageVisual as Label);
         this.takingDamage = false;
         this.damagetiks = 0;

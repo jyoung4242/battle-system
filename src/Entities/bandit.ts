@@ -55,10 +55,10 @@ export class Bandit extends Actor {
       height: 8,
       pos: new Vector(2, -16),
     });
-    this.emoteSprite = Resources.emote.toSprite();
+    //this.emoteSprite = Resources.emote.toSprite();
     this.clockEmoteSprite = Resources.timeEmote.toSprite();
-    this.emoteSprite.scale = new Vector(0.5, 0.5);
-    this.emote?.graphics.use(this.emoteSprite);
+    //this.emoteSprite.scale = new Vector(0.5, 0.5);
+    this.emote?.graphics.use(this.clockEmoteSprite);
     this.emote.graphics.hide();
 
     this.damageVisual = new Label({
@@ -91,8 +91,6 @@ export class Bandit extends Actor {
   }
 
   applyStatusEffect() {
-    console.trace("in status effect");
-
     (this.clockEmoteSprite as Sprite).scale = new Vector(0.5, 0.5);
     this.emote?.graphics.use(this.clockEmoteSprite as Sprite);
   }

@@ -128,8 +128,9 @@ const defend: menuItem = {
   isDisabled: false,
   styleText: "",
   description: "Reduce damage taken",
-  action: () => {
-    console.log("defend");
+  action: (...params: any) => {
+    const engine = params[0];
+    if (player.battleManager) player.battleManager.fsm.set("executeAction", engine, "defend");
   },
   get submenu(): string {
     //@ts-ignore
