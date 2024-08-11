@@ -92,7 +92,7 @@ export class AttackMeter extends Actor {
 
   init() {
     // set duration
-    this.duration = Math.random() * 1250 + 750;
+    this.duration = 1250;
 
     // set steps
     this.steps = this.duration / 16.6;
