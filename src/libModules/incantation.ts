@@ -438,7 +438,7 @@ class IncTargetRegion extends Actor {
 //#endregion widgets
 
 //#region keybindings
-import { KeyboardManager } from "./Keyboard/keyboard";
+import { KeyboardManager } from "./Keyboard/Keyboard";
 import { ExState } from "./ExFSM";
 
 class IncantationBindings extends ExState {

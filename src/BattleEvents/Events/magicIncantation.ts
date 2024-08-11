@@ -16,7 +16,7 @@ export class IncantationEvent extends EventAction {
       const incConfig: IncConfig = {
         keyboardManager: myKeyboardManager,
         engine: model.engineRef as Engine,
-        speed: 30,
+        speed: 40,
         sequence: "random",
         numberOfWidgets: 4,
         targetRegionBuffer: 0,
