@@ -18,9 +18,10 @@ export class MeleeAttack extends EventAction {
     return new Promise(async resolve => {
       const result = pipeline.result;
       const originalPosition = pipeline.originalPosition;
-      let hit, miss;
+      let hit, miss, damage;
       if (result) {
         hit = result.size >= 10 && result.size <= 30;
+
         miss = !hit;
       } else {
         hit = false;
@@ -35,8 +36,11 @@ export class MeleeAttack extends EventAction {
 
       if (hit) {
         if (this.who instanceof Player) {
+          damage = Math.ceil(Math.random() * 3 + 1);
+          if (this.target.isDefending) damage = 1;
+
           (this.target as Actor).actions.runAction(new Flash(this.target, Color.Red, 750));
-          (this.target as Bandit).takeDamage(10);
+          (this.target as Bandit).takeDamage(damage);
           camera.shake(2, 2, 250);
         }
       } else {

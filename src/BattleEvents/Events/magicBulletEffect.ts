@@ -27,7 +27,10 @@ export class MagicBulletEffectEvent extends EventAction {
         onInitialize(engine: Engine): void {
           magicBulletEffectAnimation.reset();
           magicBulletEffectAnimation.events.once("end", () => {
-            (this.target as Bandit).takeDamage(10);
+            let damage;
+            if (this.target.isDefending) damage = 1;
+            else damage = Math.ceil(Math.random() * 3 + 1);
+            (this.target as Bandit).takeDamage(3);
             this.kill();
             resolve();
           });

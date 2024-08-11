@@ -26,7 +26,7 @@ export class MagicBulletEvent extends EventAction {
 
           magicBulletEffectAnimation.reset();
           magicBulletEffectAnimation.events.once("end", () => {
-            (this.target as Bandit).takeDamage(10);
+            (this.target as Bandit).takeDamage(3);
             this.kill();
             resolve();
           });

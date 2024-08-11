@@ -73,7 +73,7 @@ export class AttackMeter extends Actor {
 
   stop() {
     this.isRunning = false;
-    console.log("stopped");
+
     myKeyboardManager.setOwner("none");
     this.result = {
       size: this.marker.width,
@@ -92,7 +92,7 @@ export class AttackMeter extends Actor {
 
   init() {
     // set duration
-    this.duration = Math.random() * 1000 + 500;
+    this.duration = Math.random() * 1250 + 750;
 
     // set steps
     this.steps = this.duration / 16.6;
@@ -110,8 +110,6 @@ export class AttackMeter extends Actor {
     this.marker.rotation = this.steps * this.rotationStep;
 
     this.currentStep = 0;
-
-    console.log("defaults set");
 
     myKeyboardManager.setOwner("meleeTarget", this);
     this.isRunning = true;

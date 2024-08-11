@@ -10,12 +10,25 @@ import {
   banditIdleLeft,
   banditIdleDown,
   banditIdleUp,
+  banditAttackDown,
+  banditAttackLeft,
+  banditAttackRight,
+  banditAttackUp,
+  banditCastingDown,
+  banditCastingLeft,
+  banditCastingRight,
+  banditCastingUp,
+  banditRangeAttackDown,
+  banditRangeAttackLeft,
+  banditRangeAttackRight,
+  banditRangeAttackUp,
 } from "../assets/banditanimations";
 import { EventActionSequence } from "../BattleEvents/BattleEvent";
 import { ActorMoveEvent } from "../BattleEvents/Events/ActorMoveEvent";
 import { TimedTextMessage } from "../BattleEvents/Events/messageText";
 import { ExFSM, ExState } from "../lib/ExFSM";
 import { BattleManager } from "../BattleManager";
+import { Flash } from "../lib/Actions/flash";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -23,6 +36,7 @@ export class Bandit extends Actor {
   battlManager: BattleManager | undefined;
   isPlayerControlled: boolean = false;
   isAnimationRunning: boolean = true;
+  isDefending: boolean = false;
   directionFacing: directions = "Left";
   animationFSM: ExFSM = new ExFSM();
   initative: number = 2;
@@ -30,11 +44,16 @@ export class Bandit extends Actor {
   turnTiks: number = 0;
   hp: number = 10;
   hpmax: number = 10;
+  rangedAttackRange: number = 5;
+  meleeRange: number = 1;
   avatar: string = "src/assets/banditavatar.png";
   avatarbackground: string = "";
   public inBattle: boolean = false;
   emoteSprite: Sprite | undefined;
+  sheildSprite: Sprite | undefined;
   clockEmoteSprite: Sprite | undefined;
+
+  personality: "aggressive" | "defensive" | "passive" = "aggressive";
 
   emote: Actor | undefined;
   marker: Actor | undefined;
@@ -55,9 +74,8 @@ export class Bandit extends Actor {
       height: 8,
       pos: new Vector(2, -16),
     });
-    //this.emoteSprite = Resources.emote.toSprite();
+    this.sheildSprite = Resources.shieldEmote.toSprite();
     this.clockEmoteSprite = Resources.timeEmote.toSprite();
-    //this.emoteSprite.scale = new Vector(0.5, 0.5);
     this.emote?.graphics.use(this.clockEmoteSprite);
     this.emote.graphics.hide();
 
@@ -69,8 +87,12 @@ export class Bandit extends Actor {
 
     this.addChild(this.emote);
 
-    //this.anchor = new Vector(0, 0);
     this.avatarbackground = "#" + Math.floor(Math.random() * 16777215).toString(16);
+
+    const personality = Math.floor(Math.random() * 3);
+    if (personality == 0) this.personality = "aggressive";
+    else if (personality == 1) this.personality = "defensive";
+    else if (personality == 2) this.personality = "passive";
   }
 
   setBattleManager(battleManager: BattleManager) {
@@ -90,27 +112,48 @@ export class Bandit extends Actor {
     }
   }
 
-  applyStatusEffect() {
-    (this.clockEmoteSprite as Sprite).scale = new Vector(0.5, 0.5);
-    this.emote?.graphics.use(this.clockEmoteSprite as Sprite);
+  applyStatusEffect(effect: "defend" | "time" = "time") {
+    if (effect == "defend") {
+      (this.sheildSprite as Sprite).scale = new Vector(0.5, 0.5);
+      this.emote?.graphics.use(this.sheildSprite as Sprite);
+      this.isDefending = true;
+    } else {
+      (this.clockEmoteSprite as Sprite).scale = new Vector(0.5, 0.5);
+      this.emote?.graphics.use(this.clockEmoteSprite as Sprite);
+    }
   }
 
   removeStatusEffect() {
     this.emote?.graphics.hide();
+    this.isDefending = false;
   }
 
   takeDamage(hp: number) {
     this.takingDamage = true;
     (this.damageVisual as Label).text = `-${hp}`;
     (this.damageVisual as Label).color = Color.Red;
+    (this.damageVisual as Label).pos = new Vector(0, 0);
     this.hp -= hp;
     this.addChild(this.damageVisual as Label);
+  }
+
+  heal(hp: number) {
+    this.takingDamage = true;
+    (this.damageVisual as Label).text = `+${hp}`;
+    (this.damageVisual as Label).color = Color.White;
+    (this.damageVisual as Label).pos = new Vector(0, 0);
+    this.hp += hp;
+    if (this.hp > this.hpmax) {
+      this.hp = this.hpmax;
+    }
+    this.addChild(this.damageVisual as Label);
+    this.actions.runAction(new Flash(this, Color.White));
   }
 
   onInitialize(Engine: Engine) {
     //this.graphics.use(banditIdleLeft);
     this.directionFacing = "Left";
-    this.animationFSM.register(playerIdle, playerWalking, playerIdleBattle);
+    this.animationFSM.register(playerIdle, playerWalking, playerIdleBattle, playerRangedAttack, playerMagicCast, playerAttack);
     this.animationFSM.set("idle", this);
   }
 
@@ -275,37 +318,6 @@ class idleAnimation extends ExState {
 }
 const playerIdle = new idleAnimation();
 
-/* class attackAnimation extends ExState {
-  attackAnimation: any = {
-    dudeAttackDown: banditAttackDown,
-    dudeAttackLeft: dudeAttackLeft,
-    dudeAttackRight: dudeAttackRight,
-    dudeAttackUp: dudeAttackUp,
-  };
-
-  constructor() {
-    super("attack");
-  }
-  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
-    const player = params[0];
-    player.vel = new Vector(0, 0);
-
-    this.attackAnimation["dudeAttack" + player.directionFacing].events.on("end", () => {
-      player.isAttackAnimationRunning = false;
-    });
-    this.attackAnimation["dudeAttack" + player.directionFacing].reset();
-    player.graphics.use(this.attackAnimation["dudeAttack" + player.directionFacing]);
-  }
-  exit(_next: ExState | null, ...params: any): void | Promise<void> {}
-
-  update(...params: any): void | Promise<void> {
-    const player = params[0];
-    player.vel = new Vector(0, 0);
-    player.graphics.use(this.attackAnimation["dudeAttack" + player.directionFacing]);
-  }
-}
-const playerAttack = new attackAnimation(); */
-
 class idleBattleAnimation extends ExState {
   walkanimations: Record<string, Animation> = {
     dudeWalkDown: banditWalkDown,
@@ -336,3 +348,88 @@ class idleBattleAnimation extends ExState {
   }
 }
 const playerIdleBattle = new idleBattleAnimation();
+
+class rangedAttack extends ExState {
+  animations: Record<string, Animation> = {
+    banditRangeAttackDown,
+    banditRangeAttackRight,
+    banditRangeAttackLeft,
+    banditRangeAttackUp,
+  };
+
+  constructor() {
+    super("rangedAttack");
+  }
+  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    const player = params[0];
+    let animation = this.animations["banditRangeAttack" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+  exit(_next: ExState | null, ...params: any): void | Promise<void> {}
+
+  update(...params: any): void | Promise<void> {
+    const player = params[0];
+
+    let animation = this.animations["banditRangeAttack" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+}
+const playerRangedAttack = new rangedAttack();
+
+class magicAttack extends ExState {
+  animations: Record<string, Animation> = {
+    banditCastingDown,
+    banditCastingLeft,
+    banditCastingRight,
+    banditCastingUp,
+  };
+
+  constructor() {
+    super("magicCast");
+  }
+  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    const player = params[0];
+    let animation = this.animations["banditCasting" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+  exit(_next: ExState | null, ...params: any): void | Promise<void> {}
+
+  update(...params: any): void | Promise<void> {
+    const player = params[0];
+
+    let animation = this.animations["banditCasting" + player.directionFacing];
+    player.graphics.use(animation);
+  }
+}
+const playerMagicCast = new magicAttack();
+
+class attackAnimation extends ExState {
+  attackAnimation: any = {
+    banditAttackDown: banditAttackDown,
+    banditAttackLeft: banditAttackLeft,
+    banditAttackRight: banditAttackRight,
+    banditAttackUp: banditAttackUp,
+  };
+
+  constructor() {
+    super("attack");
+  }
+  enter(_previous: ExState | null, ...params: any): void | Promise<void> {
+    const player = params[0];
+    player.vel = new Vector(0, 0);
+
+    this.attackAnimation["banditAttack" + player.directionFacing].events.on("end", () => {
+      player.isAttackAnimationRunning = false;
+    });
+    this.attackAnimation["banditAttack" + player.directionFacing].reset();
+    player.graphics.use(this.attackAnimation["banditAttack" + player.directionFacing]);
+  }
+  exit(_next: ExState | null, ...params: any): void | Promise<void> {}
+
+  update(...params: any): void | Promise<void> {
+    const player = params[0];
+    player.vel = new Vector(0, 0);
+    player.graphics.use(this.attackAnimation["banditAttack" + player.directionFacing]);
+  }
+}
+const playerAttack = new attackAnimation();

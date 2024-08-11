@@ -34,6 +34,8 @@ export class ShowPlayerEmote extends EventAction {
             this.kill();
             this.target.animationFSM.set("battleIdle", this.target);
             pipeline.messageText = `${this.target.name} is defending!`;
+            console.log(pipeline.messageText);
+
             (this.target as Player).battleManager!.endTurn();
             resolve();
           });
@@ -45,7 +47,6 @@ export class ShowPlayerEmote extends EventAction {
         }
       }
       this.who.addChild(new ItemEffectChild(this.who));
-      resolve();
     });
   }
 }

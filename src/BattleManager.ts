@@ -35,6 +35,8 @@ import { ShowInventoryEvent } from "./BattleEvents/Events/showInventory";
 import { CloseInventoryEvent } from "./BattleEvents/Events/closeInventory";
 import { PotionEffectEvent } from "./BattleEvents/Events/itemEffectEvent";
 import { ShowPlayerEmote } from "./BattleEvents/Events/showPlayerEmote";
+import { NPCMoveAction } from "./BattleEvents/Events/NPCMove";
+import { NPCAttackOrDefend } from "./BattleEvents/Events/NPCAttackOrDefend";
 
 const PLAYERGOESFIRST = true;
 
@@ -157,7 +159,7 @@ class NextTurn extends ExState {
     model.battlemenu = mainOptions;
     manageFocus();
     sendEventSequence(new EventActionSequence({ actions: [new TimedTextMessage(`Next Unit ${nextUnit.name}`, 2000, 25)] }));
-
+    nextUnit.removeStatusEffect();
     setTimeout(() => {
       if (BM.turnQueue[0].isPlayerControlled) {
         // get menu selection
@@ -199,8 +201,16 @@ class NpcAction extends ExState {
       new EventActionSequence({ actions: [new TimedTextMessage(`Preparing to act`, 2500, 25), new MoveCamera(unit, 750)] })
     );
 
+    const personality: "aggressive" | "defensive" | "passive" = unit.personality;
+    console.log(unit.name, personality);
+
+    const npcActions = new EventActionSequence({
+      actions: [new NPCMoveAction(unit, personality, player), new NPCAttackOrDefend(unit, personality, player)],
+    });
+
     setTimeout(() => {
-      let engine = model.engineRef!;
+      sendEventSequence(npcActions);
+      /* let engine = model.engineRef!;
       let tilemap = model.engineRef!.currentScene.tileMaps[0];
       const availableTiles = getReachableTiles(unit, tilemap, unit.speed);
       console.log(availableTiles);
@@ -209,7 +219,7 @@ class NpcAction extends ExState {
       selector.setAvailableTiles(availableTiles, false);
       selector.setPosition(unit.pos);
       selector.isPlayable = false;
-      engine.currentScene.add(selector);
+      engine.currentScene.add(selector); */
     }, 2000);
   }
 }

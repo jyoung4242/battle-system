@@ -39,7 +39,7 @@ export class Selector extends Actor {
   onInitialize(engine: Engine) {}
 
   setAvailableTiles(tiles: Tile[], playable: boolean = true) {
-    this.availableTiles = tiles;
+    this.availableTiles = [...tiles];
     this.isPlayable = playable;
     this.moveLatch = false;
     this.availableTiles.forEach(tile => {
@@ -50,9 +50,12 @@ export class Selector extends Actor {
 
   clearAvailableTiles() {
     this.availableTiles.forEach(tile => {
-      tile.getGraphics().forEach(graphic => {
-        if (graphic instanceof Rectangle) tile.removeGraphic(graphic);
-      });
+      let myGraphics = tile.getGraphics();
+
+      for (let i = myGraphics.length - 1; i >= 0; i--) {
+        let graph = myGraphics[i];
+        if (graph instanceof Rectangle) tile.removeGraphic(graph);
+      }
     });
     this.availableTiles = [];
   }
@@ -173,7 +176,7 @@ export class Selector extends Actor {
   }
 
   onPreUpdate(engine: Engine, delta: number): void {
-    if (this.isPlayable || this.moveLatch) return;
+    /* if (this.isPlayable || this.moveLatch) return;
     this.moveLatch = true;
     let closestTile: Tile | undefined = undefined;
     let closestDistance = 1000000;
@@ -208,7 +211,7 @@ export class Selector extends Actor {
         this.moveLatch = false;
         this.selectTile(engine);
       }, 1250);
-    }
+    } */
   }
 }
 

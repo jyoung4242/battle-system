@@ -57,6 +57,8 @@ import key from "./key.png";
 import coin from "./coin.png";
 //@ts-ignore
 import potioneffectSS from "./potioneffect.png";
+//@ts-ignore
+import rock from "./rock.png";
 
 export const Resources = {
   map: new ImageSource(overworld),
@@ -87,6 +89,7 @@ export const Resources = {
   coin: new ImageSource(coin),
   potioneffect: new ImageSource(potioneffectSS),
   shieldEmote: new ImageSource(shieldemote),
+  rock: new ImageSource(rock),
 } as const; // < -- as const is important to get strong typing!
 
 export const flashingTileSS = SpriteSheet.fromImageSource({
@@ -192,9 +195,19 @@ export const playerSS2 = SpriteSheet.fromImageSource({
 export const banditSS = SpriteSheet.fromImageSource({
   image: Resources.bandit,
   grid: {
-    rows: 4,
-    columns: 4,
+    rows: 16,
+    columns: 15,
     spriteWidth: 16,
+    spriteHeight: 32,
+  },
+});
+
+export const banditSS2 = SpriteSheet.fromImageSource({
+  image: Resources.bandit,
+  grid: {
+    rows: 8,
+    columns: 8,
+    spriteWidth: 32,
     spriteHeight: 32,
   },
 });

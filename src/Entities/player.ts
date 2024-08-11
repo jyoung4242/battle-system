@@ -38,6 +38,7 @@ import { GetMenuSelectionEvent } from "../BattleEvents/Events/GetMenuSelection";
 import { GetMeleeSelectionEvent } from "../BattleEvents/Events/meleeSelection";
 import { model } from "../UI";
 import { Resources } from "../assets/resource";
+import { Flash } from "../lib/Actions/flash";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -46,6 +47,7 @@ export class Player extends Actor {
   damageVisual: Label | undefined;
   takingDamage: boolean = false;
   damagetiks: number = 0;
+  isDefending: boolean = false;
 
   // game properties of entity
   initative: number = 2;
@@ -146,28 +148,34 @@ export class Player extends Actor {
     this.takingDamage = true;
     (this.damageVisual as Label).text = `-${hp}`;
     (this.damageVisual as Label).color = Color.Red;
+    (this.damageVisual as Label).pos = new Vector(-12, -8);
     this.hp -= hp;
     this.addChild(this.damageVisual as Label);
+    this.actions.runAction(new Flash(this, Color.Red));
   }
 
   heal(hp: number) {
     this.takingDamage = true;
     (this.damageVisual as Label).text = `+${hp}`;
     (this.damageVisual as Label).color = Color.White;
+    (this.damageVisual as Label).pos = new Vector(-12, -8);
     this.hp += hp;
     if (this.hp > this.hpmax) {
       this.hp = this.hpmax;
     }
     this.addChild(this.damageVisual as Label);
+    this.actions.runAction(new Flash(this, Color.White));
   }
 
   applyStatusEffect() {
     (this.emoteSprite as Sprite).scale = new Vector(0.5, 0.5);
     this.emote?.graphics.use(this.emoteSprite as Sprite);
+    this.isDefending = true;
   }
 
   removeStatusEffect() {
     this.emote?.graphics.hide();
+    this.isDefending = false;
   }
 
   newTileLocation(tile: Tile) {
@@ -340,7 +348,7 @@ export class Player extends Actor {
     if (this.takingDamage) {
       (this.damageVisual as Label).pos.y -= 0.5;
       this.damagetiks++;
-      if (this.damagetiks > 45) {
+      if (this.damagetiks > 25) {
         this.removeChild(this.damageVisual as Label);
         this.takingDamage = false;
         this.damagetiks = 0;

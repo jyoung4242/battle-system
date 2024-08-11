@@ -18,8 +18,11 @@ export class KnifeThrow extends EventAction {
       if (!camera) return;
       let handler = async (e: Event) => {
         if (knifehit) {
+          let damage = Math.ceil(Math.random() * 2);
+          if (this.target.isDefending) damage = 1;
+
           await this.target.actions.runAction(new Flash(this.target, Color.Red, 750)).toPromise();
-          (this.target as Bandit).takeDamage(10);
+          (this.target as Bandit).takeDamage(damage);
           camera.shake(2, 2, 250);
         } else {
           await this.target.actions.runAction(new Flash(this.target, Color.White, 750)).toPromise();
