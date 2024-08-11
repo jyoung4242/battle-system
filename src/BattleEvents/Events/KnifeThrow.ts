@@ -2,7 +2,7 @@ import { Bandit } from "../../Entities/bandit";
 import { player, Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { Knife } from "../../Entities/knife";
-import { Flash } from "../../lib/Actions/flash";
+import { Flash } from "../../libModules/Actions/flash";
 import { Color, EasingFunctions, Engine } from "excalibur";
 import { model } from "../../UI";
 

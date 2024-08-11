@@ -26,9 +26,9 @@ import {
 import { EventActionSequence } from "../BattleEvents/BattleEvent";
 import { ActorMoveEvent } from "../BattleEvents/Events/ActorMoveEvent";
 import { TimedTextMessage } from "../BattleEvents/Events/messageText";
-import { ExFSM, ExState } from "../lib/ExFSM";
+import { ExFSM, ExState } from "../libModules/ExFSM";
 import { BattleManager } from "../BattleManager";
-import { Flash } from "../lib/Actions/flash";
+import { Flash } from "../libModules/Actions/flash";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 

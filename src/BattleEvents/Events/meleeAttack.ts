@@ -2,7 +2,7 @@ import { Actor, Color, EasingFunctions, Tile, Vector } from "excalibur";
 import { Bandit } from "../../Entities/bandit";
 import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
-import { Flash } from "../../lib/Actions/flash";
+import { Flash } from "../../libModules/Actions/flash";
 import { model } from "../../UI";
 
 type directions = "Up" | "Down" | "Left" | "Right";

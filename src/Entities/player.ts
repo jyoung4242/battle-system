@@ -1,6 +1,6 @@
 import { Actor, Engine, Keys, Vector, Animation, ImageSource, Color, Sprite, Direction, Tile, Label } from "excalibur";
 import { BattleManager } from "../BattleManager";
-import { ExFSM, ExState } from "../lib/ExFSM";
+import { ExFSM, ExState } from "../libModules/ExFSM";
 
 import {
   dudeAttackDown,
@@ -38,7 +38,7 @@ import { GetMenuSelectionEvent } from "../BattleEvents/Events/GetMenuSelection";
 import { GetMeleeSelectionEvent } from "../BattleEvents/Events/meleeSelection";
 import { model } from "../UI";
 import { Resources } from "../assets/resource";
-import { Flash } from "../lib/Actions/flash";
+import { Flash } from "../libModules/Actions/flash";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 

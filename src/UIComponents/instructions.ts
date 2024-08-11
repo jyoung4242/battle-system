@@ -1,6 +1,6 @@
 import { Engine, KeyEvent, Keys, Subscription } from "excalibur";
-import { ExState } from "../lib/ExFSM";
-import { KeyboardManager } from "../lib/Keyboard/Keyboard";
+import { ExState } from "../libModules/ExFSM";
+import { KeyboardManager } from "../libModules/Keyboard/Keyboard";
 
 export class InstructionsComponent {
   closeInstructions = () => {

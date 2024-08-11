@@ -1,7 +1,7 @@
 import { Bandit } from "../../Entities/bandit";
 import { player, Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
-import { Flash } from "../../lib/Actions/flash";
+import { Flash } from "../../libModules/Actions/flash";
 import { Actor, Color, EasingFunctions, Engine, Vector } from "excalibur";
 import { model } from "../../UI";
 import { MagicBullet } from "../../Entities/magicBullet";

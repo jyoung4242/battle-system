@@ -5,7 +5,7 @@ import { Actor, Vector, Engine, Color, EasingFunctions, Camera } from "excalibur
 import { potionAnimation } from "../../assets/potionEffectAnimation";
 import { Rock } from "../../Entities/rock";
 import { model } from "../../UI";
-import { Flash } from "../../lib/Actions/flash";
+import { Flash } from "../../libModules/Actions/flash";
 
 export class NPCAttackOrDefend extends EventAction {
   constructor(public who: Bandit, public personality: "defensive" | "passive" | "aggressive", public target: Player) {

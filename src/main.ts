@@ -6,16 +6,16 @@ import { player } from "./Entities/player";
 import { bandit1, bandit2, bandit3 } from "./Entities/bandit";
 import { model, template } from "./UI";
 import { JsfxrResource } from "@excaliburjs/plugin-jsfxr";
-import { sounds } from "./lib/sounds";
-import { KeyboardManager } from "./lib/Keyboard/Keyboard";
-import { SelectorBinding } from "./lib/Keyboard/keybindings/selectorBinding";
-import { PlayerBinding } from "./lib/Keyboard/keybindings/playerBinding";
-import { GameMenuControl } from "./lib/Keyboard/keybindings/menuBinding";
-import { noBindings } from "./lib/Keyboard/keybindings/noBindings";
-import { TargetBinding } from "./lib/Keyboard/keybindings/targetSelect";
-import { MeleeBindings } from "./lib/Keyboard/keybindings/meleeBindings";
-import { MeleeTarget } from "./lib/Keyboard/keybindings/meleeTarget";
-import { IncantationSounds } from "./lib/incantation";
+import { sounds } from "./libModules/sounds";
+import { KeyboardManager } from "./libModules/Keyboard/Keyboard";
+import { SelectorBinding } from "./libModules/Keyboard/keybindings/selectorBinding";
+import { PlayerBinding } from "./libModules/Keyboard/keybindings/playerBinding";
+import { GameMenuControl } from "./libModules/Keyboard/keybindings/menuBinding";
+import { noBindings } from "./libModules/Keyboard/keybindings/noBindings";
+import { TargetBinding } from "./libModules/Keyboard/keybindings/targetSelect";
+import { MeleeBindings } from "./libModules/Keyboard/keybindings/meleeBindings";
+import { MeleeTarget } from "./libModules/Keyboard/keybindings/meleeTarget";
+import { IncantationSounds } from "./libModules/incantation";
 
 export let sndPlugin = new JsfxrResource();
 sndPlugin.init(); //initializes the JSFXR library

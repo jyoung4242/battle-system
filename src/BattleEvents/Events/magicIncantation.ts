@@ -1,5 +1,5 @@
 import { EventAction } from "../BattleEvent";
-import { Incantation, IncConfig } from "../../lib/incantation";
+import { Incantation, IncConfig } from "../../libModules/incantation";
 import { Player } from "../../Entities/player";
 import { model } from "../../UI";
 import { Engine, Vector } from "excalibur";

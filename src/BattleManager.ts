@@ -6,7 +6,7 @@ import { Engine, Tile, TileMap, Vector } from "excalibur";
 import { myKeyboardManager } from "./main";
 import { BattleEvent, EventAction, EventActionSequence } from "./BattleEvents/BattleEvent";
 import { TextMessage, TimedTextMessage } from "./BattleEvents/Events/messageText";
-import { ExFSM, ExState } from "./lib/ExFSM";
+import { ExFSM, ExState } from "./libModules/ExFSM";
 import { MoveActorsToNearestTile } from "./BattleEvents/Events/MoveActorsToNearestTile";
 import { GetMenuSelectionEvent } from "./BattleEvents/Events/GetMenuSelection";
 import { MeleeAttack } from "./BattleEvents/Events/meleeAttack";
