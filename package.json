@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm version patch && vite build",
+    "build": "vite build",
     "dev": "vite",
     "preview": "vite preview"
   },
