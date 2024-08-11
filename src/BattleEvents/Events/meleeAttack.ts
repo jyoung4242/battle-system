@@ -4,6 +4,7 @@ import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { Flash } from "../../libModules/Actions/flash";
 import { model } from "../../UI";
+import { sndPlugin } from "../../main";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 export class MeleeAttack extends EventAction {
@@ -38,12 +39,15 @@ export class MeleeAttack extends EventAction {
         if (this.who instanceof Player) {
           damage = Math.ceil(Math.random() * 3 + 1);
           if (this.target.isDefending) damage = 1;
-
+          sndPlugin.playSound("meleehit");
+          pipeline.messageText = `${this.target.name} hit for ${damage} damage`;
           (this.target as Actor).actions.runAction(new Flash(this.target, Color.Red, 750));
           (this.target as Bandit).takeDamage(damage);
           camera.shake(2, 2, 250);
         }
       } else {
+        pipeline.messageText = `${this.who.name} missed!`;
+        sndPlugin.playSound("missed");
         (this.who as Actor).actions.runAction(new Flash(this.target, Color.White, 750));
       }
 

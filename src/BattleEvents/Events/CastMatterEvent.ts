@@ -3,6 +3,7 @@ import { Bandit } from "../../Entities/bandit";
 import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { magicMatterAnimation } from "../../assets/matterMagicanimation";
+import { sndPlugin } from "../../main";
 
 export class CastMatterEvent extends EventAction {
   constructor(public who: Bandit | Player, public target: Bandit | Player) {
@@ -28,6 +29,7 @@ export class CastMatterEvent extends EventAction {
             resolve();
           });
           this.graphics.use(magicMatterAnimation);
+          sndPlugin.playSound("cast");
         }
 
         onPreUpdate(engine: Engine, delta: number): void {

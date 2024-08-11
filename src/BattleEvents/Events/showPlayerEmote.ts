@@ -4,7 +4,7 @@ import { Bandit } from "../../Entities/bandit";
 import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { model } from "../../UI";
-import { myKeyboardManager } from "../../main";
+import { myKeyboardManager, sndPlugin } from "../../main";
 
 export class ShowPlayerEmote extends EventAction {
   constructor(public who: Bandit | Player, public target: Bandit | Player) {
@@ -40,6 +40,7 @@ export class ShowPlayerEmote extends EventAction {
             resolve();
           });
           this.graphics.use(potionAnimation);
+          sndPlugin.playSound("cast");
         }
 
         onPreUpdate(engine: Engine, delta: number): void {

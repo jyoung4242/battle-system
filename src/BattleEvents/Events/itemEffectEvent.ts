@@ -5,6 +5,7 @@ import { EventAction } from "../BattleEvent";
 import { Resources } from "../../resource";
 
 import { potionAnimation } from "../../assets/potionEffectAnimation";
+import { sndPlugin } from "../../main";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 export class PotionEffectEvent extends EventAction {
@@ -61,6 +62,7 @@ export class PotionEffectEvent extends EventAction {
           }
         }
         this.who.addChild(new ItemEffectChild(this.who));
+        sndPlugin.playSound("cast");
       } else resolve(); //if canceled or bad selection, skip
     });
   }

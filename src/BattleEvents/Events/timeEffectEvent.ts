@@ -3,6 +3,7 @@ import { Bandit } from "../../Entities/bandit";
 import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { timeEffectAnimation } from "../../assets/timeeffect";
+import { sndPlugin } from "../../main";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 export class TimeEffectEvent extends EventAction {
@@ -35,6 +36,7 @@ export class TimeEffectEvent extends EventAction {
             resolve();
           });
           this.graphics.use(timeEffectAnimation);
+          sndPlugin.playSound("timeEffect");
         }
 
         onPreUpdate(engine: Engine, delta: number): void {

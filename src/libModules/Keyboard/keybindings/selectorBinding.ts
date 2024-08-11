@@ -37,6 +37,7 @@ export class SelectorBinding extends ExState {
       selector.moveDown(engine);
     }
     if (engine.input.keyboard.wasPressed(Keys.Enter)) {
+      console.log("enter was pressed");
       selector.selectTile(engine);
     }
     if (engine.input.keyboard.wasPressed(Keys.Escape)) selector.cancelSelection(engine);

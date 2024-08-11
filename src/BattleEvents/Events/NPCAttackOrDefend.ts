@@ -6,6 +6,7 @@ import { potionAnimation } from "../../assets/potionEffectAnimation";
 import { Rock } from "../../Entities/rock";
 import { model } from "../../UI";
 import { Flash } from "../../libModules/Actions/flash";
+import { sndPlugin } from "../../main";
 
 export class NPCAttackOrDefend extends EventAction {
   constructor(public who: Bandit, public personality: "defensive" | "passive" | "aggressive", public target: Player) {
@@ -46,7 +47,11 @@ export class NPCAttackOrDefend extends EventAction {
         if (hit) {
           camera.shake(2, 2, 250);
           this.target.takeDamage(damage);
+          sndPlugin.playSound("meleehit");
+          pipeline.messageText = `${this.target.name} hit for ${damage} damage`;
         } else {
+          sndPlugin.playSound("missed");
+          pipeline.messageText = `${this.who.name} missed!`;
           await this.target.actions.runAction(new Flash(this.target, Color.White, 750)).toPromise();
         }
         //apply damage and damage animation to player
@@ -66,9 +71,13 @@ export class NPCAttackOrDefend extends EventAction {
         let handler = async (e: Event) => {
           if (hit) {
             camera.shake(2, 2, 250);
+            sndPlugin.playSound("rockhit");
+            pipeline.messageText = `${this.target.name} hit for ${damage} damage`;
             await this.target.actions.runAction(new Flash(this.target, Color.Red, 750)).toPromise();
             (this.target as Player).takeDamage(damage);
           } else {
+            pipeline.messageText = `${this.who.name} missed!`;
+            sndPlugin.playSound("missed");
             await this.target.actions.runAction(new Flash(this.target, Color.White, 750)).toPromise();
           }
           this.who.animationFSM.set("battleIdle", this.who);
@@ -122,6 +131,8 @@ export class NPCAttackOrDefend extends EventAction {
               resolve();
             });
             this.graphics.use(potionAnimation);
+            sndPlugin.playSound("cast");
+            pipeline.messageText = `${this.target.name} is Defending!`;
           }
 
           onPreUpdate(engine: Engine, delta: number): void {

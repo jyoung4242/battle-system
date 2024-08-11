@@ -4,6 +4,7 @@ import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 import { timeAnimations } from "../../assets/timeAnimations";
 import { model } from "../../UI";
+import { sndPlugin } from "../../main";
 
 export class CastTimeEvent extends EventAction {
   constructor(public who: Bandit | Player, public target: Bandit | Player) {
@@ -29,6 +30,7 @@ export class CastTimeEvent extends EventAction {
             resolve();
           });
           this.graphics.use(timeAnimations);
+          sndPlugin.playSound("cast");
         }
 
         onPreUpdate(engine: Engine, delta: number): void {

@@ -5,6 +5,7 @@ import { Knife } from "../../Entities/knife";
 import { Flash } from "../../libModules/Actions/flash";
 import { Color, EasingFunctions, Engine } from "excalibur";
 import { model } from "../../UI";
+import { sndPlugin } from "../../main";
 
 export class KnifeThrow extends EventAction {
   constructor(public who: Bandit | Player, public target: Player | Bandit) {
@@ -20,11 +21,15 @@ export class KnifeThrow extends EventAction {
         if (knifehit) {
           let damage = Math.ceil(Math.random() * 2);
           if (this.target.isDefending) damage = 1;
+          sndPlugin.playSound("knifehit");
 
           await this.target.actions.runAction(new Flash(this.target, Color.Red, 750)).toPromise();
           (this.target as Bandit).takeDamage(damage);
+          pipeline.messageText = `${this.target.name} hit for ${damage} damage`;
           camera.shake(2, 2, 250);
         } else {
+          pipeline.messageText = `${this.who.name} missed!`;
+          sndPlugin.playSound("missed");
           await this.target.actions.runAction(new Flash(this.target, Color.White, 750)).toPromise();
         }
         this.who.animationFSM.set("battleIdle", this.who);

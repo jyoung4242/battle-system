@@ -6,6 +6,7 @@ import { Actor, Color, EasingFunctions, Engine, Vector } from "excalibur";
 import { model } from "../../UI";
 import { MagicBullet } from "../../Entities/magicBullet";
 import { magicBulletEffectAnimation } from "../../assets/bulleteffect";
+import { sndPlugin } from "../../main";
 
 export class MagicBulletEvent extends EventAction {
   constructor(public who: Bandit | Player, public target: Player | Bandit) {
@@ -17,7 +18,7 @@ export class MagicBulletEvent extends EventAction {
       class MagicEffect extends Actor {
         constructor(public target: Bandit | Player) {
           super({ width: 32, height: 32 });
-          this.z = 4;
+          this.z = 100;
           this.pos = new Vector(0, 0);
         }
 
@@ -43,6 +44,7 @@ export class MagicBulletEvent extends EventAction {
       let handler = async (e: Event) => {
         if (true) {
           this.target.addChild(new MagicEffect(this.target));
+          sndPlugin.playSound("missileEffect");
           await this.target.actions.runAction(new Flash(this.target, Color.Red, 750)).toPromise();
           camera.shake(2, 2, 250);
         } else {

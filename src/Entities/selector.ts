@@ -151,6 +151,8 @@ export class Selector extends Actor {
     const tilemap = engine.currentScene.tileMaps[0];
     const currentTile: Tile | undefined = tilemap.tiles.find(tile => tile.pos.x == this.pos.x - 8 && tile.pos.y == this.pos.y - 8);
 
+    console.log("current tile", currentTile);
+
     if (!currentTile) return;
 
     //if same tile as player, don't do anything
@@ -168,9 +170,7 @@ export class Selector extends Actor {
   }
 
   cancelSelection(engine: Engine) {
-    this.availableTiles.forEach(tile => {
-      tile.removeGraphic(this.availableTileRect);
-    });
+    this.clearAvailableTiles();
     myKeyboardManager.setOwner("battlemenu");
     engine.currentScene.remove(this);
   }

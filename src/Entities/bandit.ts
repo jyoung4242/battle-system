@@ -136,6 +136,9 @@ export class Bandit extends Actor {
     (this.damageVisual as Label).color = Color.Red;
     (this.damageVisual as Label).pos = new Vector(0, 0);
     this.hp -= hp;
+    if (this.hp <= 0) {
+      this.hp = 0;
+    }
     this.addChild(this.damageVisual as Label);
   }
 

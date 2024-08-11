@@ -4,6 +4,7 @@ import { Player } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
 
 import { magicBulletEffectAnimation } from "../../assets/bulleteffect";
+import { sndPlugin } from "../../main";
 
 export class MagicBulletEffectEvent extends EventAction {
   constructor(public who: Bandit | Player, public target: Bandit | Player) {
@@ -42,6 +43,7 @@ export class MagicBulletEffectEvent extends EventAction {
         }
       }
       this.target.addChild(new MagicEffect(this.target));
+      sndPlugin.playSound("missileEffect");
     });
   }
 }

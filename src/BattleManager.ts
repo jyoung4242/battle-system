@@ -3,7 +3,7 @@ import { manageFocus, model } from "./UI";
 import { player, Player } from "./Entities/player";
 import { Bandit } from "./Entities/bandit";
 import { Engine, Tile, TileMap, Vector } from "excalibur";
-import { myKeyboardManager } from "./main";
+import { myKeyboardManager, sndPlugin } from "./main";
 import { BattleEvent, EventAction, EventActionSequence } from "./BattleEvents/BattleEvent";
 import { TextMessage, TimedTextMessage } from "./BattleEvents/Events/messageText";
 import { ExFSM, ExState } from "./libModules/ExFSM";
@@ -61,6 +61,7 @@ export class BattleManager {
     );
     this.updateQueu();
     this.fsm.set("startBattle", this);
+    sndPlugin.playSound("startBattle");
   }
 
   joinBattle(participants: Bandit[]) {
@@ -205,7 +206,11 @@ class NpcAction extends ExState {
     console.log(unit.name, personality);
 
     const npcActions = new EventActionSequence({
-      actions: [new NPCMoveAction(unit, personality, player), new NPCAttackOrDefend(unit, personality, player)],
+      actions: [
+        new NPCMoveAction(unit, personality, player),
+        new NPCAttackOrDefend(unit, personality, player),
+        new PipedTextMessage(2500, 25),
+      ],
     });
 
     setTimeout(() => {
@@ -258,6 +263,7 @@ class ExecuteAction extends ExState {
         new LungeEvent(player, (player.currentTarget as Player | Bandit).pos, 20),
         new ActionMeterEvent(player.scene!),
         new MeleeAttack(player, player.currentTarget as Player | Bandit),
+        new PipedTextMessage(2500, 25),
         new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
       ],
       ranged: [
@@ -265,6 +271,7 @@ class ExecuteAction extends ExState {
         new ActionMeterEvent(player.scene!),
         new RangedAttackEvent(player, player.currentTarget as Player | Bandit),
         new KnifeThrow(player, player.currentTarget as Player | Bandit),
+        new PipedTextMessage(2500, 25),
         new CheckForEnemeyDead(player.currentTarget as Player | Bandit),
       ],
       item: [
