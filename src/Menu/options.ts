@@ -105,7 +105,9 @@ const cast: menuItem = {
   styleText: "",
   description: "Use Magic",
   action: () => {
-    console.log("cast");
+    debugger;
+    moveCursorRight(true);
+    model.cursorIndex = 1;
   },
   get submenu(): string {
     //@ts-ignore

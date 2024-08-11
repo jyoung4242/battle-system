@@ -51,6 +51,8 @@ export class GetMenuSelectionEvent extends EventAction {
           model.currentBattleItem.action(engine);
           document.removeEventListener("battleMenuSelection", handler);
           resolve();
+        } else if (selection == "Cast") {
+          model.currentBattleItem.action(engine);
         }
         //this runs the code in options.ts for that menu option
       };
