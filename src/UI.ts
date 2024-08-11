@@ -20,10 +20,16 @@ import coin from "./assets/coin.png";
 
 //Components
 import { MeleeMenu } from "./UIComponents/MeleeMenu";
+import { InstructionsComponent } from "./UIComponents/instructions";
 
 let soundPlaying: boolean = false;
 
 export const model = {
+  InstructionsComponent,
+  instruction: undefined as undefined | InstructionsComponent,
+  instructionDefault: {
+    isShowing: false,
+  },
   Inventory,
   inventoryDefault: {
     isShowing: false,
@@ -325,6 +331,7 @@ export const template = `
         
         <\${MeleeMenu:meleeMenu === meleedefault }>
         <\${Inventory:inventory === inventoryDefault }>
+        <\${InstructionsComponent:instruction === instructionDefault  }>
 
         <player-card \${===showBattleQueue}>
             <div class="cardavatar" style="background-color: \${currentTurn.avatarbackground};" >

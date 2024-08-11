@@ -44,12 +44,10 @@ myKeyboardManager.registerOwner(new noBindings());
 myKeyboardManager.registerOwner(new TargetBinding());
 myKeyboardManager.registerOwner(new MeleeBindings());
 myKeyboardManager.registerOwner(new MeleeTarget());
-myKeyboardManager.setOwner("player");
+//myKeyboardManager.setOwner("player");
 
 //@ts-ignore
 model.inventory.model.init(myKeyboardManager, game);
-console.log(model.inventory);
-console.log(model);
 
 const tilemap = new TileMap({
   tileWidth: 16,
@@ -63,6 +61,10 @@ for (let tile of tilemap.tiles) {
 }
 
 await game.start(loader);
+//@ts-ignore
+model.instruction.model.binding(myKeyboardManager);
+//@ts-ignore
+model.instruction.model.state.isShowing = true;
 
 game.currentScene.onPreUpdate = () => {
   myKeyboardManager.update();
@@ -74,6 +76,4 @@ game.add(bandit1);
 game.add(bandit2);
 game.add(bandit3);
 
-console.log(player);
-
-//game.add(meter);
+console.log(myKeyboardManager);
