@@ -1,4 +1,4 @@
-import { bulletEffectSS } from "./resource";
+import { bulletEffectSS } from "../resource";
 import { Animation, AnimationStrategy } from "excalibur";
 
 export const magicBulletEffectAnimation = new Animation({

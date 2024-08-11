@@ -1,7 +1,7 @@
 import "./style.css";
 import { UI } from "@peasy-lib/peasy-ui";
 import { Engine, DisplayMode, TileMap } from "excalibur";
-import { loader, mapSS } from "./assets/resource";
+import { loader, mapSS } from "./resource";
 import { player } from "./Entities/player";
 import { bandit1, bandit2, bandit3 } from "./Entities/bandit";
 import { model, template } from "./UI";

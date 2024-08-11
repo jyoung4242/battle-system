@@ -1,5 +1,5 @@
 import { Animation, AnimationStrategy } from "excalibur";
-import { banditSS, banditSS2 } from "./resource";
+import { banditSS, banditSS2 } from "../resource";
 
 export const banditWalkDown = new Animation({
   frames: [

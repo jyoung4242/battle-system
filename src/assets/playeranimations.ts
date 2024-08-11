@@ -1,5 +1,5 @@
 import { Animation, AnimationStrategy } from "excalibur";
-import { playerSS1, playerSS2 } from "./resource";
+import { playerSS1, playerSS2 } from "../resource";
 
 export const dudeWalkUp = new Animation({
   frames: [

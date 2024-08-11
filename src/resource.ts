@@ -2,63 +2,63 @@
 import { ImageSource, Loader, SpriteSheet } from "excalibur";
 
 //@ts-ignore
-import overworld from "./Overworld.png";
+import overworld from "./assets/Overworld.png";
 //@ts-ignore
-import font from "./font.png";
+import font from "./assets/font.png";
 //@ts-ignore
-import character from "./character.png";
+import character from "./assets/character.png";
 //@ts-ignore
-import banditResource from "./bandi.png";
+import banditResource from "./assets/bandi.png";
 //@ts-ignore
-import emote from "./emote_alert.png";
+import emote from "./assets/emote_alert.png";
 //@ts-ignore
-import playeravatar from "./playeravatar.png";
+import playeravatar from "./assets/playeravatar.png";
 //@ts-ignore
-import banditavatar from "./banditavatar.png";
+import banditavatar from "./assets/banditavatar.png";
 //@ts-ignore
-import flashingTile from "./flashingtile-Sheet.png";
+import flashingTile from "./assets/flashingtile-Sheet.png";
 //@ts-ignore
-import targetMarker from "./marker.png";
+import targetMarker from "./assets/marker.png";
 //@ts-ignore
-import dissolveTexture from "./DissolvePattern.png";
+import dissolveTexture from "./assets/DissolvePattern.png";
 //@ts-ignore
-import knife from "./knife.png";
+import knife from "./assets/knife.png";
 //@ts-ignore
-import time from "./time.png";
+import time from "./assets/time.png";
 //@ts-ignore
-import matter from "./matter.png";
+import matter from "./assets/matter.png";
 //@ts-ignore
-import magicbullet from "./magicbullet.png";
+import magicbullet from "./assets/magicbullet.png";
 //@ts-ignore
-import timeeffect from "./timeeffect.png";
+import timeeffect from "./assets/timeeffect.png";
 //@ts-ignore
-import bulleteffect from "./bulleteffect.png";
+import bulleteffect from "./assets/bulleteffect.png";
 //@ts-ignore
-import timeEmote from "./timeemote.png";
+import timeEmote from "./assets/timeemote.png";
 //@ts-ignore
-import shieldemote from "./emote_shield.png";
+import shieldemote from "./assets/emote_shield.png";
 //@ts-ignore
-import leftbutton from "./leftbutton.png";
+import leftbutton from "./assets/leftbutton.png";
 //@ts-ignore
-import rightbutton from "./rightbutton.png";
+import rightbutton from "./assets/rightbutton.png";
 //@ts-ignore
-import downbutton from "./downbutton.png";
+import downbutton from "./assets/downbutton.png";
 //@ts-ignore
-import upbutton from "./upbutton.png";
+import upbutton from "./assets/upbutton.png";
 //@ts-ignore
-import enterbutton from "./enterbutton.png";
+import enterbutton from "./assets/enterbutton.png";
 //@ts-ignore
-import book from "./boook.png";
+import book from "./assets/boook.png";
 //@ts-ignore
-import potion from "./redpotion.png";
+import potion from "./assets/redpotion.png";
 //@ts-ignore
-import key from "./key.png";
+import key from "./assets/key.png";
 //@ts-ignore
-import coin from "./coin.png";
+import coin from "./assets/coin.png";
 //@ts-ignore
-import potioneffectSS from "./potioneffect.png";
+import potioneffectSS from "./assets/potioneffect.png";
 //@ts-ignore
-import rock from "./rock.png";
+import rock from "./assets/rock.png";
 
 export const Resources = {
   map: new ImageSource(overworld),

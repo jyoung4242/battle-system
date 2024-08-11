@@ -1,4 +1,4 @@
-import { flashingTileSS } from "./resource";
+import { flashingTileSS } from "../resource";
 import { Animation } from "excalibur";
 
 export const flashing = new Animation({

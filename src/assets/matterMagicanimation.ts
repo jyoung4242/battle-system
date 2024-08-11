@@ -1,4 +1,4 @@
-import { matterMagicSS } from "./resource";
+import { matterMagicSS } from "../resource";
 import { Animation, AnimationStrategy } from "excalibur";
 
 export const magicMatterAnimation = new Animation({

@@ -23,7 +23,7 @@ import { RangedAttackEvent } from "./BattleEvents/Events/RangedAttack";
 import { KnifeThrow } from "./BattleEvents/Events/KnifeThrow";
 import { MagicPoseEvent } from "./BattleEvents/Events/magicPose";
 import { CastTimeEvent } from "./BattleEvents/Events/castTime";
-import { timeeffectSS } from "./assets/resource";
+import { timeeffectSS } from "./resource";
 import { TimeEffectEvent } from "./BattleEvents/Events/timeEffectEvent";
 import { ApplyEffectEvent } from "./BattleEvents/Events/applyEffect";
 import { CastMatterEvent } from "./BattleEvents/Events/CastMatterEvent";

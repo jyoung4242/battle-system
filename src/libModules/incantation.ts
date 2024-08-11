@@ -35,7 +35,7 @@ import {
   Subscription,
   Vector,
 } from "excalibur";
-import { Resources } from "../assets/resource";
+import { Resources } from "../resource";
 
 const outlineShader = `#version 300 es
 precision mediump float;

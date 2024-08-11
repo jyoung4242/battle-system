@@ -2,7 +2,7 @@ import { EasingFunctions, Material } from "excalibur";
 import { Bandit } from "../../Entities/bandit";
 import { player, Player, playerIdleBattle } from "../../Entities/player";
 import { EventAction } from "../BattleEvent";
-import { Resources } from "../../assets/resource";
+import { Resources } from "../../resource";
 import { model } from "../../UI";
 
 export class CheckForEnemeyDead extends EventAction {

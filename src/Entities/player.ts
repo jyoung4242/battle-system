@@ -37,8 +37,10 @@ import { DancingCranesintheMoonlight, WhisperingLeafontheWind } from "../Melee/F
 import { GetMenuSelectionEvent } from "../BattleEvents/Events/GetMenuSelection";
 import { GetMeleeSelectionEvent } from "../BattleEvents/Events/meleeSelection";
 import { model } from "../UI";
-import { Resources } from "../assets/resource";
+import { Resources } from "../resource";
 import { Flash } from "../libModules/Actions/flash";
+//@ts-expect-error
+import playerAvatar from "../assets/playeravatar.png";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -65,7 +67,7 @@ export class Player extends Actor {
   isPlayerControlled: boolean = true;
   isKeyDetectionEnabled: boolean = true;
   public inBattle: boolean = false;
-  avatar: string = "src/assets/playeravatar.png";
+  avatar: string = playerAvatar;
   avatarbackground: string = "";
   battleManager: BattleManager | undefined;
   animations: Record<string, Animation> = {

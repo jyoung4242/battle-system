@@ -1,4 +1,4 @@
-import { magicBulletSS } from "./resource";
+import { magicBulletSS } from "../resource";
 import { Animation, AnimationStrategy } from "excalibur";
 
 export const magicBulletAnimation = new Animation({

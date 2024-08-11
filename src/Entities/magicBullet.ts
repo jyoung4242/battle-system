@@ -1,5 +1,5 @@
 import { Actor, Collider, CollisionType, Engine, Vector } from "excalibur";
-import { Resources } from "../assets/resource";
+import { Resources } from "../resource";
 import { Player } from "./player";
 import { Bandit } from "./bandit";
 import { magicBulletAnimation } from "../assets/magicbullet";

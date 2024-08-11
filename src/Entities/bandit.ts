@@ -1,6 +1,6 @@
 import { Engine, Actor, Vector, Sprite, Tile, Animation, Color, Label } from "excalibur";
 import { Player, player } from "./player";
-import { Resources } from "../assets/resource";
+import { Resources } from "../resource";
 import {
   banditWalkDown,
   banditWalkUp,
@@ -29,6 +29,8 @@ import { TimedTextMessage } from "../BattleEvents/Events/messageText";
 import { ExFSM, ExState } from "../libModules/ExFSM";
 import { BattleManager } from "../BattleManager";
 import { Flash } from "../libModules/Actions/flash";
+//@ts-expect-error
+import banditAvatar from "../assets/banditavatar.png";
 
 type directions = "Up" | "Down" | "Left" | "Right";
 
@@ -46,7 +48,7 @@ export class Bandit extends Actor {
   hpmax: number = 10;
   rangedAttackRange: number = 5;
   meleeRange: number = 1;
-  avatar: string = "src/assets/banditavatar.png";
+  avatar: string = banditAvatar;
   avatarbackground: string = "";
   public inBattle: boolean = false;
   emoteSprite: Sprite | undefined;

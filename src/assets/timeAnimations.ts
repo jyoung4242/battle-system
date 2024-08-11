@@ -1,4 +1,4 @@
-import { timeMagicSS } from "./resource";
+import { timeMagicSS } from "../resource";
 import { Animation, AnimationStrategy } from "excalibur";
 
 export const timeAnimations = new Animation({

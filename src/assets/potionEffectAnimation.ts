@@ -1,4 +1,4 @@
-import { potionEffectSS } from "./resource";
+import { potionEffectSS } from "../resource";
 import { Animation, AnimationStrategy } from "excalibur";
 
 export const potionAnimation = new Animation({
